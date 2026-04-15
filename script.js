@@ -545,35 +545,44 @@
         } else {
           btn.style.display = 'block';
         }
-      }
-    });
-  }
-
-  function updateAddFoodMacros() {
+       function updateAddFoodMacros() {
     if (!selectedFood) return;
-    const s = parseFloat(dom.servingInput.value) || 0;
+    const sInput = parseFloat(dom.servingInput.value) || 0;
     const f = selectedFood;
 
-    // ----- Amount Display Logic -----
-    let totalGrams = f.grams * s;
+    let totalGrams = 0;
     let dispVal = 0;
     let dispLabel = currentUnit;
+    let servingsForMacros = sInput;
 
-    if (currentUnit === 'g') {
-      dispVal = Math.round(totalGrams);
-      dispLabel = 'grams';
-    } else if (currentUnit === 'ml') {
-      dispVal = Math.round(totalGrams);
-      dispLabel = 'ml';
-    } else if (currentUnit === 'oz') {
-      dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
-      dispLabel = 'ounces';
-    } else if (currentUnit === 'lb') {
-      dispVal = (totalGrams / 453.592).toFixed(2);
-      dispLabel = 'pounds';
-    } else if (currentUnit === 'cup') {
-      dispVal = (totalGrams / 240).toFixed(2);
-      dispLabel = 'cups';
+    // ----- Amount & Macro Calculation Logic -----
+    if (currentUnit === 'pcs' && f.perPiece) {
+      totalGrams = sInput * f.perPiece;
+      servingsForMacros = totalGrams / f.grams;
+      dispVal = sInput;
+      dispLabel = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
+      // Special pluralization for UI
+      if (f.pieceName === 'oyster' && sInput !== 1) dispLabel = 'oysters';
+      if (f.pieceName === 'shrimp') dispLabel = 'shrimp';
+    } else {
+      totalGrams = f.grams * sInput;
+      servingsForMacros = sInput;
+      if (currentUnit === 'g') {
+        dispVal = Math.round(totalGrams);
+        dispLabel = 'grams';
+      } else if (currentUnit === 'ml') {
+        dispVal = Math.round(totalGrams);
+        dispLabel = 'ml';
+      } else if (currentUnit === 'oz') {
+        dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
+        dispLabel = 'ounces';
+      } else if (currentUnit === 'lb') {
+        dispVal = (totalGrams / 453.592).toFixed(2);
+        dispLabel = 'pounds';
+      } else if (currentUnit === 'cup') {
+        dispVal = (totalGrams / 240).toFixed(2);
+        dispLabel = 'cups';
+      }
     }
 
     dom.amountValue.textContent = dispVal;
@@ -589,10 +598,12 @@
     `;
 
     dom.addFoodTotals.innerHTML = `
-      <div class="macro-total-item mt-cal"><span class="mt-value">${Math.round(f.cal * s)}</span><span class="mt-label">cal total</span></div>
-      <div class="macro-total-item mt-p"><span class="mt-value">${Math.round(f.protein * s)}g</span><span class="mt-label">protein</span></div>
-      <div class="macro-total-item mt-c"><span class="mt-value">${Math.round(f.carbs * s)}g</span><span class="mt-label">carbs</span></div>
-      <div class="macro-total-item mt-f"><span class="mt-value">${Math.round(f.fat * s)}g</span><span class="mt-label">fat</span></div>
+      <div class="macro-total-item mt-cal"><span class="mt-value">${Math.round(f.cal * servingsForMacros)}</span><span class="mt-label">cal total</span></div>
+      <div class="macro-total-item mt-p"><span class="mt-value">${Math.round(f.protein * servingsForMacros)}g</span><span class="mt-label">protein</span></div>
+      <div class="macro-total-item mt-c"><span class="mt-value">${Math.round(f.carbs * servingsForMacros)}g</span><span class="mt-label">carbs</span></div>
+      <div class="macro-total-item mt-f"><span class="mt-value">${Math.round(f.fat * servingsForMacros)}g</span><span class="mt-label">fat</span></div>
+    `;
+  }/div>
     `;
   }
 
