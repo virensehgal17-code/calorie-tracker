@@ -595,10 +595,10 @@
 
     // ----- Macros Preview Display -----
     dom.addFoodMacros.innerHTML = `
-      <div class="macro-preview-item mp-cal"><span class="mp-value">${f.cal}</span><span class="mp-label">cal/srv</span></div>
-      <div class="macro-preview-item mp-p"><span class="mp-value">${f.protein}g</span><span class="mp-label">protein</span></div>
-      <div class="macro-preview-item mp-c"><span class="mp-value">${f.carbs}g</span><span class="mp-label">carbs</span></div>
-      <div class="macro-preview-item mp-f"><span class="mp-value">${f.fat}g</span><span class="mp-label">fat</span></div>
+      <div class="macro-preview-item mp-cal"><span class="mp-value">${Math.round(f.cal * servingsForMacros)}</span><span class="mp-label">calories</span></div>
+      <div class="macro-preview-item mp-p"><span class="mp-value">${Math.round(f.protein * servingsForMacros)}g</span><span class="mp-label">protein</span></div>
+      <div class="macro-preview-item mp-c"><span class="mp-value">${Math.round(f.carbs * servingsForMacros)}g</span><span class="mp-label">carbs</span></div>
+      <div class="macro-preview-item mp-f"><span class="mp-value">${Math.round(f.fat * servingsForMacros)}g</span><span class="mp-label">fat</span></div>
     `;
 
     dom.addFoodTotals.innerHTML = `
