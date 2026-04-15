@@ -242,71 +242,7 @@
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
 
-  const dom = {
-    dateDisplay: $('#date-display'),
-    prevDayBtn: $('#prev-day-btn'),
-    nextDayBtn: $('#next-day-btn'),
-    settingsBtn: $('#settings-btn'),
-
-    calCurrent: $('#cal-current'),
-    proteinCurrent: $('#protein-current'),
-    carbsCurrent: $('#carbs-current'),
-    fatCurrent: $('#fat-current'),
-    calGoal: $('#cal-goal'),
-    proteinGoal: $('#protein-goal'),
-    carbsGoal: $('#carbs-goal'),
-    fatGoal: $('#fat-goal'),
-
-    foodSearch: $('#food-search'),
-    searchResults: $('#search-results'),
-    customAddBtn: $('#custom-add-btn'),
-
-    suggestions: $('#suggestions'),
-    suggestionCards: $('#suggestion-cards'),
-
-    logHeader: $('#log-header'),
-    logCount: $('#log-count'),
-    logEntries: $('#log-entries'),
-    emptyLog: $('#empty-log'),
-
-    settingsModal: $('#settings-modal'),
-    closeSettingsBtn: $('#close-settings-btn'),
-    
-    quizModal: $('#quiz-modal'),
-
-    goalCalories: $('#goal-calories'),
-    goalProtein: $('#goal-protein'),
-    goalCarbs: $('#goal-carbs'),
-    goalFat: $('#goal-fat'),
-    saveSettingsBtn: $('#save-settings-btn'),
-    clearTodayBtn: $('#clear-today-btn'),
-    hardRefreshBtn: $('#hard-refresh-btn'),
-    presets: $('#presets'),
-
-    addFoodModal: $('#add-food-modal'),
-    addFoodTitle: $('#add-food-title'),
-    addFoodMacros: $('#add-food-macros'),
-    servingInput: $('#serving-input'),
-    servingMinus: $('#serving-minus'),
-    servingPlus: $('#serving-plus'),
-    servingDescLabel: $('#serving-desc-label'),
-    amountValue: $('#amount-value'),
-    amountUnitLabel: $('#amount-unit-label'),
-    amountEquivalents: $('#amount-equivalents'),
-    unitBtns: $$('.unit-btn'),
-    addFoodTotals: $('#add-food-totals'),
-    confirmAddBtn: $('#confirm-add-btn'),
-    closeAddFoodBtn: $('#close-add-food-btn'),
-
-    customFoodModal: $('#custom-food-modal'),
-    customName: $('#custom-name'),
-    customCalories: $('#custom-calories'),
-    customProtein: $('#custom-protein'),
-    customCarbs: $('#custom-carbs'),
-    customFat: $('#custom-fat'),
-    confirmCustomBtn: $('#confirm-custom-btn'),
-    closeCustomBtn: $('#close-custom-btn'),
-  };
+  // dom is initialized in init() below
 
   // ==========================================
   // Utility Functions
@@ -1012,8 +948,6 @@
   }
 
   // ==========================================
-  // Event Bindings
-  // ===========================  // ==========================================
   // Event Bindings & Initialization
   // ==========================================
   
