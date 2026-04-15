@@ -557,44 +557,36 @@
     const f = selectedFood;
 
     let totalGrams = 0;
+    let servingsForMacros = 0;
+
     if (currentUnit === 'pcs' && f.perPiece) {
       totalGrams = sInput * f.perPiece;
-    } else if (currentUnit === 'oz') {
-      totalGrams = sInput * 28.3495;
-    } else if (currentUnit === 'lb') {
-      totalGrams = sInput * 453.592;
-    } else if (currentUnit === 'cup') {
-      totalGrams = sInput * 240;
-    } else if (currentUnit === 'g' || currentUnit === 'ml') {
-      totalGrams = sInput;
+      servingsForMacros = totalGrams / f.grams;
     } else {
-      totalGrams = sInput * f.grams; // fallback / default serving multiplier
+      totalGrams = sInput * f.grams;
+      servingsForMacros = sInput;
     }
 
-    const servingsForMacros = totalGrams / f.grams;
-
-    // ----- UI Labels -----
-    let dispVal = sInput;
+    // ----- UI Display Values -----
+    let dispVal = 0;
     let dispLabel = currentUnit;
 
     if (currentUnit === 'pcs' && f.perPiece) {
+      dispVal = sInput;
       dispLabel = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
       if (f.pieceName === 'oyster' && sInput !== 1) dispLabel = 'oysters';
       if (f.pieceName === 'shrimp') dispLabel = 'shrimp';
-    } else if (currentUnit === 'g') {
-      dispVal = Math.round(sInput);
-      dispLabel = 'grams';
-    } else if (currentUnit === 'ml') {
-      dispVal = Math.round(sInput);
-      dispLabel = 'ml';
+    } else if (currentUnit === 'g' || currentUnit === 'ml') {
+      dispVal = Math.round(totalGrams);
+      dispLabel = currentUnit === 'g' ? 'grams' : 'ml';
     } else if (currentUnit === 'oz') {
-      dispVal = sInput.toFixed(1).replace(/\.0$/, '');
+      dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
       dispLabel = 'ounces';
     } else if (currentUnit === 'lb') {
-      dispVal = sInput.toFixed(2);
+      dispVal = (totalGrams / 453.592).toFixed(2);
       dispLabel = 'pounds';
     } else if (currentUnit === 'cup') {
-      dispVal = sInput.toFixed(2);
+      dispVal = (totalGrams / 240).toFixed(2);
       dispLabel = 'cups';
     }
 
