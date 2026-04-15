@@ -873,6 +873,16 @@
     dom.prevDayBtn.addEventListener('click', () => navigateDate(-1));
     dom.nextDayBtn.addEventListener('click', () => navigateDate(1));
 
+    // Unit toggle buttons
+    dom.unitBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.style.display === 'none') return;
+        currentUnit = btn.dataset.unit;
+        updateUnitBtns();
+        updateAddFoodMacros();
+      });
+    });
+
     // Settings
     dom.settingsBtn.addEventListener('click', openSettings);
     dom.closeSettingsBtn.addEventListener('click', () => closeModal(dom.settingsModal));
