@@ -192,19 +192,27 @@
   // Enhance DB with Exact Base Weights
   // ==========================================
   FOOD_DB.forEach(f => {
-    f.isLiquid = f.serving.includes('ml') || (f.serving.includes('oz') && /milk|juice|smoothie|drink|shake|soda|coffee|latte|gatorade/i.test(f.name));
-    f.grams = 100; // default safe fallback
+    // Determine if liquid (if not already set)
+    if (f.isLiquid === undefined) {
+      const liquidKeywords = /milk|juice|smoothie|drink|shake|soda|coffee|latte|gatorade/i;
+      f.isLiquid = f.serving.includes('ml') || (f.serving.includes('oz') && liquidKeywords.test(f.name));
+    }
 
-    let m = f.serving.match(/\((\d+)g\)/);
-    if (m) { f.grams = parseInt(m[1], 10); return; }
+    // Only auto-detect grams if not manually set
+    if (!f.grams) {
+      f.grams = 100; // default safe fallback
+      let m = f.serving.match(/\((\d+)g\)/);
+      if (m) { f.grams = parseInt(m[1], 10); } else {
+        m = f.serving.match(/\((\d+)ml\)/);
+        if (m) { f.grams = parseInt(m[1], 10); f.isLiquid = true; } else {
+          m = f.serving.match(/([\d\.]+)\s*oz/);
+          if (m) { f.grams = Math.round(parseFloat(m[1]) * 28.3495); }
+        }
+      }
+    }
 
-    m = f.serving.match(/\((\d+)ml\)/);
-    if (m) { f.grams = parseInt(m[1], 10); f.isLiquid = true; return; }
-
-    m = f.serving.match(/([\d\.]+)\s*oz/);
-    if (m) { f.grams = Math.round(parseFloat(m[1]) * 28.3495); return; }
-
-    if (f.name.toLowerCase().includes('egg')) { f.grams = 50; return; } // roughly 1 large egg
+    // Hard default for eggs
+    if (f.name.toLowerCase().includes('egg') && !f.grams) f.grams = 50;
   });
 
   // ==========================================
