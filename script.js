@@ -22,7 +22,7 @@
     { name: 'Steak (Ribeye)', serving: '6 oz (170g)', cal: 420, protein: 44, carbs: 0, fat: 26, grams: 170 },
     { name: 'Salmon Fillet', serving: '6 oz (170g)', cal: 350, protein: 40, carbs: 0, fat: 20, grams: 170 },
     { name: 'Tilapia', serving: '6 oz (170g)', cal: 220, protein: 45, carbs: 0, fat: 4, grams: 170 },
-    { name: 'Shrimp (Cooked)', serving: '6 oz (170g)', cal: 170, protein: 36, carbs: 0, fat: 2, grams: 170, perPiece: 15, pieceName: 'shrimp' },
+    { name: 'Shrimp (Cooked)', serving: '6 oz (170g)', cal: 170, protein: 36, carbs: 0, fat: 2, grams: 170, perPiece: 28, pieceName: 'shrimp' },
     { name: 'Oysters (Raw)', serving: '6 medium (120g)', cal: 100, protein: 11, carbs: 6, fat: 3, grams: 120, perPiece: 20, pieceName: 'oyster' },
     { name: 'Tuna (Canned)', serving: '1 can (142g)', cal: 180, protein: 40, carbs: 0, fat: 2, grams: 142 },
     { name: 'Cod Fillet', serving: '6 oz (170g)', cal: 140, protein: 30, carbs: 0, fat: 1, grams: 170 },
