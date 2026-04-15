@@ -125,7 +125,7 @@
       <div class="modal-backdrop"></div>
       <div class="modal-content">
         <div class="modal-header">
-          <h2>Goals & Settings</h2>
+          <h2>Daily Targets</h2>
           <button id="close-settings-btn" class="close-btn" aria-label="Close">&times;</button>
         </div>
         <div class="modal-body">
@@ -139,6 +139,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
           </div>
+
           <div class="settings-section">
             <h3>Daily Targets</h3>
             <div class="goal-grid">
@@ -160,18 +161,23 @@
               </div>
             </div>
           </div>
+          
           <div class="settings-section">
             <h3>Quick Presets</h3>
-            <div class="preset-buttons">
-              <button class="preset-btn" data-cal="2500" data-p="150" data-c="300" data-f="80">Lean Bulk</button>
-              <button class="preset-btn active" data-cal="3000" data-p="180" data-c="350" data-f="90">Standard Bulk</button>
-              <button class="preset-btn" data-cal="3500" data-p="200" data-c="420" data-f="100">Aggressive Bulk</button>
-              <button class="preset-btn" data-cal="2000" data-p="160" data-c="200" data-f="70">Cut</button>
+            <div id="presets" class="preset-buttons">
+              <button class="preset-btn" data-cal="2500" data-p="150" data-c="300" data-f="80">Lean Bulk (2500)</button>
+              <button class="preset-btn active" data-cal="3000" data-p="200" data-c="400" data-f="90">Standard Bulk (3000)</button>
+              <button class="preset-btn" data-cal="3500" data-p="220" data-c="500" data-f="100">Mass Gainer (3500)</button>
+              <button class="preset-btn" data-cal="2000" data-p="160" data-c="200" data-f="70">Cut (2000)</button>
             </div>
           </div>
-          <button id="save-settings-btn" class="primary-btn">Save Goals</button>
-          <button id="clear-today-btn" class="danger-btn">Clear Today's Log</button>
-          <button id="hard-refresh-btn" class="secondary-btn">Hard Refresh App</button>
+
+          <button id="save-settings-btn" class="primary-btn">Save Changes</button>
+          
+          <div style="margin-top: 24px; border-top: 1px solid var(--border-subtle); padding-top: 16px;">
+            <button id="clear-today-btn" class="danger-btn">Clear Today's Log</button>
+            <button id="hard-refresh-btn" class="danger-btn" style="border-color: rgba(239,68,68,0.2); color: var(--text-muted); font-weight: 400; font-size: 0.75rem; margin-top: 8px;">Hard Refresh App</button>
+          </div>
         </div>
       </div>
     </div>
