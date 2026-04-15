@@ -1013,198 +1013,256 @@
 
   // ==========================================
   // Event Bindings
+  // ===========================  // ==========================================
+  // Event Bindings & Initialization
   // ==========================================
+  
+  let dom = {};
 
   function init() {
-    // Date nav
-    dom.prevDayBtn.addEventListener('click', () => navigateDate(-1));
-    dom.nextDayBtn.addEventListener('click', () => navigateDate(1));
+    console.log("Fuel Up: Starting Initialization...");
+    try {
+      // Re-initialize DOM references fresh
+      dom = {
+        dateDisplay: $('#date-display'),
+        prevDayBtn: $('#prev-day-btn'),
+        nextDayBtn: $('#next-day-btn'),
+        settingsBtn: $('#settings-btn'),
 
-    dom.unitBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (btn.style.display === 'none') return;
-        const oldUnit = currentUnit;
-        const newUnit = btn.dataset.unit;
-        if (oldUnit === newUnit) return;
+        calCurrent: $('#cal-current'),
+        proteinCurrent: $('#protein-current'),
+        carbsCurrent: $('#carbs-current'),
+        fatCurrent: $('#fat-current'),
+        calGoal: $('#cal-goal'),
+        proteinGoal: $('#protein-goal'),
+        carbsGoal: $('#carbs-goal'),
+        fatGoal: $('#fat-goal'),
 
-        const f = selectedFood;
-        if (!f) return;
-        const oldVal = parseFloat(dom.servingInput.value) || 0;
-        // 1. Convert oldVal to newVal context
-        let newVal = oldVal;
-        if (f.perPiece) {
-          const piecesPerServing = f.grams / f.perPiece;
-          // Switching TO pcs
-          if (newUnit === 'pcs' && oldUnit !== 'pcs') {
-            newVal = oldVal * piecesPerServing;
+        foodSearch: $('#food-search'),
+        searchResults: $('#search-results'),
+        customAddBtn: $('#custom-add-btn'),
+
+        suggestions: $('#suggestions'),
+        suggestionCards: $('#suggestion-cards'),
+
+        logHeader: $('#log-header'),
+        logCount: $('#log-count'),
+        logEntries: $('#log-entries'),
+        emptyLog: $('#empty-log'),
+
+        settingsModal: $('#settings-modal'),
+        closeSettingsBtn: $('#close-settings-btn'),
+        
+        quizModal: $('#quiz-modal'),
+
+        goalCalories: $('#goal-calories'),
+        goalProtein: $('#goal-protein'),
+        goalCarbs: $('#goal-carbs'),
+        goalFat: $('#goal-fat'),
+        saveSettingsBtn: $('#save-settings-btn'),
+        clearTodayBtn: $('#clear-today-btn'),
+        hardRefreshBtn: $('#hard-refresh-btn'),
+        presets: $('#presets'),
+
+        addFoodModal: $('#add-food-modal'),
+        addFoodTitle: $('#add-food-title'),
+        addFoodMacros: $('#add-food-macros'),
+        servingInput: $('#serving-input'),
+        servingMinus: $('#serving-minus'),
+        servingPlus: $('#serving-plus'),
+        servingDescLabel: $('#serving-desc-label'),
+        amountValue: $('#amount-value'),
+        amountUnitLabel: $('#amount-unit-label'),
+        amountEquivalents: $('#amount-equivalents'),
+        unitBtns: Array.from($$('.unit-btn')),
+        addFoodTotals: $('#add-food-totals'),
+        confirmAddBtn: $('#confirm-add-btn'),
+        closeAddFoodBtn: $('#close-add-food-btn'),
+
+        customFoodModal: $('#custom-food-modal'),
+        customName: $('#custom-name'),
+        customCalories: $('#custom-calories'),
+        customProtein: $('#custom-protein'),
+        customCarbs: $('#custom-carbs'),
+        customFat: $('#custom-fat'),
+        confirmCustomBtn: $('#confirm-custom-btn'),
+        closeCustomBtn: $('#close-custom-btn'),
+      };
+
+      // Ensure critical elements exist
+      if (!dom.foodSearch) throw new Error("Critical UI element '#food-search' not found.");
+
+      // Date nav
+      dom.prevDayBtn?.addEventListener('click', () => navigateDate(-1));
+      dom.nextDayBtn?.addEventListener('click', () => navigateDate(1));
+
+      // Unit buttons switcher
+      dom.unitBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const f = selectedFood;
+          if (!f) return;
+          const oldUnit = currentUnit;
+          const newUnit = btn.dataset.unit;
+          if (oldUnit === newUnit) return;
+
+          const oldVal = parseFloat(dom.servingInput.value) || 0;
+          let newVal = oldVal;
+          if (f.perPiece) {
+            const piecesPerServing = f.grams / f.perPiece;
+            if (newUnit === 'pcs' && oldUnit !== 'pcs') newVal = oldVal * piecesPerServing;
+            else if (oldUnit === 'pcs' && newUnit !== 'pcs') newVal = oldVal / piecesPerServing;
           }
-          // Switching FROM pcs
-          else if (oldUnit === 'pcs' && newUnit !== 'pcs') {
-            newVal = oldVal / piecesPerServing;
-          }
+
+          dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+          currentUnit = newUnit;
+          updateUnitBtns();
+          updateAddFoodMacros();
+        });
+      });
+
+      // Settings
+      dom.settingsBtn?.addEventListener('click', openSettings);
+      dom.closeSettingsBtn?.addEventListener('click', () => closeModal(dom.settingsModal));
+      dom.saveSettingsBtn?.addEventListener('click', saveSettings);
+      dom.clearTodayBtn?.addEventListener('click', () => {
+        if (confirm('Clear all entries for today?')) {
+          clearDay(currentDate);
+          closeModal(dom.settingsModal);
+          refreshUI();
+        }
+      });
+
+      dom.hardRefreshBtn?.addEventListener('click', () => {
+        if (confirm('Hard refresh the app? This will clear caches and reload.')) {
+          window.location.reload(true);
+        }
+      });
+
+      dom.settingsModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.settingsModal));
+
+      // Preset buttons (using Array.from for safety)
+      Array.from(dom.presets?.querySelectorAll('.preset-btn') || []).forEach(btn => {
+        btn.addEventListener('click', () => {
+          dom.goalCalories.value = btn.dataset.cal;
+          dom.goalProtein.value = btn.dataset.p;
+          dom.goalCarbs.value = btn.dataset.c;
+          dom.goalFat.value = btn.dataset.f;
+          updatePresetActive();
+        });
+      });
+
+      // Smart Macro Quiz Modal Flow
+      document.addEventListener('click', (e) => {
+        const openBtn = e.target.closest('#open-quiz-btn');
+        if (openBtn) {
+          closeModal(dom.settingsModal);
+          openModal(dom.quizModal);
+          return;
         }
 
-        dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
-        currentUnit = newUnit;
-        updateUnitBtns();
+        const closeBtn = e.target.closest('#close-quiz-btn');
+        const backdrop = e.target.classList.contains('modal-backdrop') && e.target.closest('#quiz-modal');
+        if (closeBtn || backdrop) {
+          closeModal(dom.quizModal);
+          return;
+        }
+
+        const calcBtn = e.target.closest('#calc-quiz-btn');
+        if (calcBtn) {
+          const sex = $('#quiz-sex').value;
+          const age = parseInt($('#quiz-age').value) || 25;
+          const weightLbs = parseFloat($('#quiz-weight').value) || 160;
+          const heightInches = parseFloat($('#quiz-height').value) || 68;
+          const activityMult = parseFloat($('#quiz-activity').value) || 1.55;
+          const goalAdjustment = parseFloat($('#quiz-goal').value) || 250;
+
+          const weightKg = weightLbs / 2.20462;
+          const heightCm = heightInches * 2.54;
+
+          let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+          bmr += (sex === 'male') ? 5 : -161;
+
+          const tdee = bmr * activityMult;
+          const targetCalories = Math.round(tdee + goalAdjustment);
+          const targetProtein = Math.round(weightLbs / 5) * 5;
+          const targetFat = Math.round((targetCalories * 0.25) / 9);
+          const remainingCals = targetCalories - (targetProtein * 4) - (targetFat * 9);
+          const targetCarbs = Math.max(0, Math.round(remainingCals / 4));
+
+          saveGoals({ calories: targetCalories, protein: targetProtein, carbs: targetCarbs, fat: targetFat });
+          updateGoalLabels();
+          refreshUI();
+          closeModal(dom.quizModal);
+        }
+      });
+
+      // Search
+      dom.foodSearch?.addEventListener('input', () => {
+        const q = dom.foodSearch.value.trim();
+        const results = searchFoods(q);
+        renderSearchResults(results);
+      });
+
+      dom.foodSearch?.addEventListener('keydown', (e) => {
+        const items = dom.searchResults?.querySelectorAll('.search-result-item') || [];
+        if (items.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeResultIndex = Math.min(activeResultIndex + 1, items.length - 1);
+          items.forEach((el, i) => el.classList.toggle('active', i === activeResultIndex));
+          items[activeResultIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeResultIndex = Math.max(activeResultIndex - 1, 0);
+          items.forEach((el, i) => el.classList.toggle('active', i === activeResultIndex));
+          items[activeResultIndex]?.scrollIntoView({ block: 'nearest' });
+        } else if (e.key === 'Enter' && activeResultIndex >= 0) {
+          e.preventDefault();
+          items[activeResultIndex].click();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#quick-add')) {
+          dom.searchResults?.classList.add('hidden');
+        }
+      });
+
+      // Modals
+      dom.customAddBtn?.addEventListener('click', openCustomFoodModal);
+      dom.closeCustomBtn?.addEventListener('click', () => closeModal(dom.customFoodModal));
+      dom.customFoodModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.customFoodModal));
+      dom.confirmCustomBtn?.addEventListener('click', confirmCustomFood);
+
+      dom.closeAddFoodBtn?.addEventListener('click', () => closeModal(dom.addFoodModal));
+      dom.addFoodModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.addFoodModal));
+      dom.confirmAddBtn?.addEventListener('click', confirmAddFood);
+      dom.servingInput?.addEventListener('input', updateAddFoodMacros);
+
+      dom.servingMinus?.addEventListener('click', () => {
+        const v = parseFloat(dom.servingInput.value) || 0;
+        let step = (currentUnit === 'pcs') ? 1 : 0.25;
+        dom.servingInput.value = Math.max(0, v - step).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         updateAddFoodMacros();
       });
-    });
 
-    // Settings
-    dom.settingsBtn.addEventListener('click', openSettings);
-    dom.closeSettingsBtn.addEventListener('click', () => closeModal(dom.settingsModal));
-    dom.saveSettingsBtn.addEventListener('click', saveSettings);
-    dom.clearTodayBtn.addEventListener('click', () => {
-      if (confirm('Clear all entries for today?')) {
-        clearDay(currentDate);
-        closeModal(dom.settingsModal);
-        refreshUI();
-      }
-    });
-
-    dom.hardRefreshBtn?.addEventListener('click', () => {
-      if (confirm('Hard refresh the app? This will clear caches and reload. Your data will be safe.')) {
-        window.location.reload(true);
-      }
-    });
-
-    // Settings modal backdrop close
-    dom.settingsModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.settingsModal));
-
-    // Preset buttons
-    dom.presets?.querySelectorAll('.preset-btn')?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        dom.goalCalories.value = btn.dataset.cal;
-        dom.goalProtein.value = btn.dataset.p;
-        dom.goalCarbs.value = btn.dataset.c;
-        dom.goalFat.value = btn.dataset.f;
-        updatePresetActive();
+      dom.servingPlus?.addEventListener('click', () => {
+        const v = parseFloat(dom.servingInput.value) || 0;
+        let step = (currentUnit === 'pcs') ? 1 : 0.25;
+        dom.servingInput.value = Math.min(200, v + step).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+        updateAddFoodMacros();
       });
-    });
 
-    // Smart Macro Quiz Modal Flow
-    document.addEventListener('click', (e) => {
-      const openBtn = e.target.closest('#open-quiz-btn');
-      if (openBtn) {
-        closeModal(dom.settingsModal);
-        openModal(dom.quizModal);
-        return;
-      }
+      // Boot sequence
+      console.log("Fuel Up: Running first refresh...");
+      refreshUI();
+      console.log("Fuel Up: Initialization Complete!");
 
-      const closeBtn = e.target.closest('#close-quiz-btn');
-      const backdrop = e.target.classList.contains('modal-backdrop') && e.target.closest('#quiz-modal');
-      if (closeBtn || backdrop) {
-        closeModal(dom.quizModal);
-        return;
-      }
-
-      const calcBtn = e.target.closest('#calc-quiz-btn');
-      if (calcBtn) {
-        // Pull values fresh from DOM to avoid any null/stale references
-        const sex = $('#quiz-sex').value;
-        const age = parseInt($('#quiz-age').value) || 25;
-        const weightLbs = parseFloat($('#quiz-weight').value) || 160;
-        const heightInches = parseFloat($('#quiz-height').value) || 68;
-        const activityMult = parseFloat($('#quiz-activity').value) || 1.55;
-        const goalAdjustment = parseFloat($('#quiz-goal').value) || 250;
-
-        const weightKg = weightLbs / 2.20462;
-        const heightCm = heightInches * 2.54;
-
-        // Mifflin-St Jeor Equation
-        let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
-        bmr += (sex === 'male') ? 5 : -161;
-
-        const tdee = bmr * activityMult;
-        const targetCalories = Math.round(tdee + goalAdjustment);
-
-        // Protein: ~1g per lb of current weight (rounded to nearest 5)
-        const targetProtein = Math.round(weightLbs / 5) * 5;
-
-        // Fat: ~25% of total calories (9 calories per gram)
-        const targetFat = Math.round((targetCalories * 0.25) / 9);
-
-        // Carbs: Remaining calories (4 calories per gram)
-        const remainingCals = targetCalories - (targetProtein * 4) - (targetFat * 9);
-        const targetCarbs = Math.max(0, Math.round(remainingCals / 4));
-
-        // Immediately apply and refresh
-        saveGoals({
-          calories: targetCalories,
-          protein: targetProtein,
-          carbs: targetCarbs,
-          fat: targetFat
-        });
-        
-        updateGoalLabels();
-        refreshUI();
-        closeModal(dom.quizModal);
-      }
-    });
-
-    // Search
-    dom.foodSearch.addEventListener('input', () => {
-      const q = dom.foodSearch.value.trim();
-      const results = searchFoods(q);
-      renderSearchResults(results);
-    });
-
-    dom.foodSearch.addEventListener('keydown', (e) => {
-      const items = dom.searchResults.querySelectorAll('.search-result-item');
-      if (items.length === 0) return;
-
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        activeResultIndex = Math.min(activeResultIndex + 1, items.length - 1);
-        items.forEach((el, i) => el.classList.toggle('active', i === activeResultIndex));
-        items[activeResultIndex].scrollIntoView({ block: 'nearest' });
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        activeResultIndex = Math.max(activeResultIndex - 1, 0);
-        items.forEach((el, i) => el.classList.toggle('active', i === activeResultIndex));
-        items[activeResultIndex].scrollIntoView({ block: 'nearest' });
-      } else if (e.key === 'Enter' && activeResultIndex >= 0) {
-        e.preventDefault();
-        items[activeResultIndex].click();
-      }
-    });
-
-    // Close search on outside click
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#quick-add')) {
-        dom.searchResults.classList.add('hidden');
-      }
-    });
-
-    // Custom add
-    dom.customAddBtn.addEventListener('click', openCustomFoodModal);
-    dom.closeCustomBtn.addEventListener('click', () => closeModal(dom.customFoodModal));
-    dom.customFoodModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(dom.customFoodModal));
-    dom.confirmCustomBtn.addEventListener('click', confirmCustomFood);
-
-    // Add food modal
-    dom.closeAddFoodBtn.addEventListener('click', () => closeModal(dom.addFoodModal));
-    dom.addFoodModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(dom.addFoodModal));
-    dom.confirmAddBtn.addEventListener('click', confirmAddFood);
-    dom.servingInput.addEventListener('input', updateAddFoodMacros);
-    dom.servingMinus.addEventListener('click', () => {
-      const v = parseFloat(dom.servingInput.value) || 0;
-      let step = (currentUnit === 'pcs') ? 1 : 0.25;
-      const newVal = Math.max(0, v - step);
-      dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
-      updateAddFoodMacros();
-    });
-    dom.servingPlus.addEventListener('click', () => {
-      const v = parseFloat(dom.servingInput.value) || 0;
-      let step = (currentUnit === 'pcs') ? 1 : 0.25;
-      const newVal = Math.min(200, v + step);
-      dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
-      updateAddFoodMacros();
-    });
-
-    // Initial render
-    refreshUI();
+    } catch (err) {
+      console.error("Fuel Up Initialization Error:", err);
+      alert("App failed to load: " + err.message);
+    }
   }
 
   // Boot
@@ -1212,6 +1270,8 @@
     document.addEventListener('DOMContentLoaded', init);
   } else {
     init();
+  }
+})();nit();
   }
 
 })();
