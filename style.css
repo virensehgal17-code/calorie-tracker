@@ -861,6 +861,15 @@ button {
   margin-top: 4px;
 }
 
+#amount-equivalents {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--accent-green);
+  opacity: 0.8;
+  margin-top: 4px;
+  letter-spacing: 0.2px;
+}
+
 #unit-switcher {
   display: flex;
   justify-content: center;
