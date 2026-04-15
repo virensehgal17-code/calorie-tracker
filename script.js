@@ -96,19 +96,6 @@
     { name: 'White Potato', serving: '1 medium (170g)', cal: 160, protein: 4, carbs: 37, fat: 0.1, grams: 170 },
 
     // ---- Fruits ----
-    { name: 'Coconut Oil', serving: '1 tbsp', cal: 120, protein: 0, carbs: 0, fat: 14 },
-
-    // ---- Legumes ----
-    { name: 'Black Beans', serving: '1 cup cooked', cal: 230, protein: 15, carbs: 40, fat: 1 },
-    { name: 'Chickpeas', serving: '1 cup cooked', cal: 270, protein: 15, carbs: 45, fat: 4 },
-    { name: 'Lentils', serving: '1 cup cooked', cal: 230, protein: 18, carbs: 40, fat: 1 },
-    { name: 'Kidney Beans', serving: '1 cup cooked', cal: 220, protein: 15, carbs: 40, fat: 1 },
-    { name: 'Hummus', serving: '¼ cup (60g)', cal: 100, protein: 5, carbs: 9, fat: 6 },
-    { name: 'Edamame', serving: '1 cup shelled', cal: 190, protein: 17, carbs: 14, fat: 8 },
-
-    // ---- Fast Food / Common Meals ----
-    { name: 'Hamburger (Single)', serving: '1 burger', cal: 450, protein: 25, carbs: 35, fat: 22 },
-    { name: 'Cheeseburger (Double)', serving: '1 burger', cal: 700, protein: 40, carbs: 40, fat: 38 },
     { name: 'Grilled Chicken Sandwich', serving: '1 sandwich', cal: 420, protein: 32, carbs: 40, fat: 14 },
     { name: 'Chicken Tenders', serving: '5 pieces', cal: 450, protein: 28, carbs: 30, fat: 24 },
     { name: 'Pizza Slice (Cheese)', serving: '1 large slice', cal: 280, protein: 12, carbs: 34, fat: 10 },
