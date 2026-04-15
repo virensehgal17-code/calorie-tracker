@@ -529,17 +529,15 @@
   }
 
   function updateUnitBtns() {
+    if (!dom.unitBtns) return;
     dom.unitBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.unit === currentUnit);
+      const u = btn.dataset.unit;
+      btn.classList.toggle('active', u === currentUnit);
+      
       if (selectedFood) {
-        const u = btn.dataset.unit;
-        // Piece logic
         if (u === 'pcs') {
           btn.style.display = selectedFood.perPiece ? 'block' : 'none';
-          return;
-        }
-        // Liquid/Solid logic
-        if (selectedFood.isLiquid && (u === 'lb' || u === 'g' || u === 'pcs')) {
+        } else if (selectedFood.isLiquid && (u === 'lb' || u === 'g')) {
           btn.style.display = 'none';
         } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
           btn.style.display = 'none';
