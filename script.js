@@ -999,11 +999,40 @@
     dom.prevDayBtn.addEventListener('click', () => navigateDate(-1));
     dom.nextDayBtn.addEventListener('click', () => navigateDate(1));
 
-    // Unit toggle buttons
     dom.unitBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         if (btn.style.display === 'none') return;
-        currentUnit = btn.dataset.unit;
+        const oldUnit = currentUnit;
+        const newUnit = btn.dataset.unit;
+        if (oldUnit === newUnit) return;
+
+        const f = selectedFood;
+        const oldVal = parseFloat(dom.servingInput.value) || 0;
+        if (!f || oldVal <= 0) {
+          currentUnit = newUnit;
+          updateUnitBtns();
+          updateAddFoodMacros();
+          return;
+        }
+
+        // 1. Convert oldVal to standard grams
+        let g = 0;
+        if (oldUnit === 'pcs' && f.perPiece) g = oldVal * f.perPiece;
+        else if (oldUnit === 'oz') g = oldVal * 28.3495;
+        else if (oldUnit === 'lb') g = oldVal * 453.592;
+        else if (oldUnit === 'cup') g = oldVal * 240;
+        else g = oldVal; 
+
+        // 2. Convert standard grams to newVal
+        let newVal = 0;
+        if (newUnit === 'pcs' && f.perPiece) newVal = g / f.perPiece;
+        else if (newUnit === 'oz') newVal = g / 28.3495;
+        else if (newUnit === 'lb') newVal = g / 453.592;
+        else if (newUnit === 'cup') newVal = g / 240;
+        else newVal = g; 
+
+        dom.servingInput.value = newVal.toFixed(1).replace(/\.0$/, '');
+        currentUnit = newUnit;
         updateUnitBtns();
         updateAddFoodMacros();
       });
