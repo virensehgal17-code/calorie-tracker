@@ -226,7 +226,7 @@
               </select>
             </div>
           </div>
-          <button id="calc-quiz-btn" class="primary-btn">Calculate & Apply</button>
+          <button id="calc-quiz-btn" class="primary-btn" onclick="window.applyMacroQuiz(); return false;">Calculate & Apply</button>
         </div>
       </div>
     </div>
@@ -305,6 +305,43 @@
     </div>
 
   </div>
+  <script>
+    window.applyMacroQuiz = function() {
+      const sex = document.getElementById('quiz-sex').value;
+      const age = parseInt(document.getElementById('quiz-age').value) || 25;
+      const weightLbs = parseFloat(document.getElementById('quiz-weight').value) || 160;
+      const heightInches = parseFloat(document.getElementById('quiz-height').value) || 68;
+      const activityMult = parseFloat(document.getElementById('quiz-activity').value) || 1.55;
+      const goalAdjustment = parseFloat(document.getElementById('quiz-goal').value) || 250;
+
+      const weightKg = weightLbs / 2.20462;
+      const heightCm = heightInches * 2.54;
+
+      let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+      bmr += (sex === 'male') ? 5 : -161;
+
+      const tdee = bmr * activityMult;
+      const targetCalories = Math.round(tdee + goalAdjustment);
+
+      const targetProtein = Math.round(weightLbs / 5) * 5;
+      const targetFat = Math.round((targetCalories * 0.25) / 9);
+      const remainingCals = targetCalories - (targetProtein * 4) - (targetFat * 9);
+      const targetCarbs = Math.max(0, Math.round(remainingCals / 4));
+
+      const newGoals = {
+        calories: targetCalories,
+        protein: targetProtein,
+        carbs: targetCarbs,
+        fat: targetFat
+      };
+
+      localStorage.setItem('fuelup_goals', JSON.stringify(newGoals));
+      
+      document.getElementById('quiz-modal').classList.add('hidden');
+      document.body.style.overflow = '';
+      window.location.reload(true);
+    };
+  </script>
   <script src="script.js?v=2"></script>
 </body>
 </html>
