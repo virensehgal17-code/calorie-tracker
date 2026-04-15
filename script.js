@@ -513,15 +513,21 @@
     dom.confirmAddBtn.textContent = 'Add to Log';
     selectedFood = food;
     dom.addFoodTitle.textContent = food.name;
-    dom.servingInput.value = '1';
     dom.foodSearch.value = '';
     dom.searchResults.classList.add('hidden');
 
     // Reset default unit based on liquid/solid
     currentUnit = food.isLiquid ? 'ml' : 'g';
     if (food.serving.includes('oz')) currentUnit = 'oz';
-    updateUnitBtns();
 
+    // Set initial value to the food's base grams/oz/ml (1 full serving)
+    if (currentUnit === 'oz') {
+      dom.servingInput.value = (food.grams / 28.3495).toFixed(1).replace(/\.0$/, '');
+    } else {
+      dom.servingInput.value = food.grams;
+    }
+
+    updateUnitBtns();
     updateAddFoodMacros();
     openModal(dom.addFoodModal);
   }
