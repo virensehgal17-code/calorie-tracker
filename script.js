@@ -537,6 +537,7 @@
         if (u === 'pcs') {
           btn.style.display = selectedFood.perPiece ? 'block' : 'none';
           return;
+        }
         // Liquid/Solid logic
         if (selectedFood.isLiquid && (u === 'lb' || u === 'g' || u === 'pcs')) {
           btn.style.display = 'none';
