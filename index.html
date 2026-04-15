@@ -178,11 +178,11 @@
 
     <!-- Smart Macro Quiz Modal -->
     <div id="quiz-modal" class="modal hidden">
-      <div class="modal-backdrop"></div>
+      <div class="modal-backdrop" onclick="document.getElementById('quiz-modal').classList.add('hidden'); document.body.style.overflow=''; return false;"></div>
       <div class="modal-content">
         <div class="modal-header">
           <h2>Smart Macro Quiz</h2>
-          <button id="close-quiz-btn" class="close-btn" aria-label="Close">&times;</button>
+          <button id="close-quiz-btn" class="close-btn" aria-label="Close" onclick="document.getElementById('quiz-modal').classList.add('hidden'); document.body.style.overflow=''; return false;">&times;</button>
         </div>
         <div class="modal-body">
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">Fill out your details to calculate the optimal daily targets to reach your goals.</p>
