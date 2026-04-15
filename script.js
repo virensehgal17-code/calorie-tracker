@@ -25,6 +25,7 @@
     { name: 'Tilapia', serving: '6 oz (170g)', cal: 220, protein: 45, carbs: 0, fat: 4 },
     { name: 'Shrimp', serving: '6 oz (170g)', cal: 170, protein: 36, carbs: 0, fat: 2 },
     { name: 'Tuna (Canned)', serving: '1 can (142g)', cal: 180, protein: 40, carbs: 0, fat: 2 },
+    { name: 'Lox (Smoked Salmon)', serving: '3 oz (85g)', cal: 99, protein: 15, carbs: 0, fat: 4 },
     { name: 'Pork Chop', serving: '6 oz (170g)', cal: 340, protein: 44, carbs: 0, fat: 16 },
     { name: 'Turkey Breast (Deli)', serving: '4 slices (112g)', cal: 120, protein: 22, carbs: 2, fat: 2 },
     { name: 'Bacon', serving: '3 slices (36g)', cal: 160, protein: 10, carbs: 0, fat: 13 },
