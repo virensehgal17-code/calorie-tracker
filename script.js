@@ -572,7 +572,10 @@
     let dispVal = 0;
     let dispLabel = currentUnit;
 
-    if (currentUnit === 'pcs' && f.perPiece) {
+    if (currentUnit === 'srv') {
+      dispVal = sInput.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+      dispLabel = sInput === 1 ? 'serving' : 'servings';
+    } else if (currentUnit === 'pcs' && f.perPiece) {
       dispVal = sInput;
       dispLabel = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
       if (f.pieceName === 'oyster' && sInput !== 1) dispLabel = 'oysters';
@@ -594,6 +597,24 @@
     dom.amountValue.textContent = dispVal;
     dom.amountUnitLabel.textContent = dispLabel;
     dom.servingDescLabel.textContent = `(1 serving = ${f.serving})`;
+
+    // ----- Equivalents Logic -----
+    let eqParts = [];
+    const srvNum = servingsForMacros.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+    if (currentUnit !== 'srv') eqParts.push(`≈ ${srvNum} servings`);
+    
+    if (currentUnit !== 'g' && currentUnit !== 'ml') {
+      eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
+    }
+
+    if (f.perPiece && currentUnit !== 'pcs') {
+      const pCount = Math.round(totalGrams / f.perPiece);
+      let pLabel = f.pieceName || 'piece';
+      if (pLabel === 'oyster' && pCount !== 1) pLabel = 'oysters';
+      else if (pCount !== 1 && pLabel !== 'shrimp') pLabel += 's';
+      eqParts.push(`${pCount} ${pLabel}`);
+    }
+    dom.amountEquivalents.textContent = eqParts.join(' | ');
 
     // ----- Macros Preview Display -----
     dom.addFoodMacros.innerHTML = `
