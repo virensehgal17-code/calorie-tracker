@@ -25,28 +25,17 @@
     { name: 'Shrimp (Cooked)', serving: '6 oz (170g)', cal: 170, protein: 36, carbs: 0, fat: 2, grams: 170, perPiece: 15, pieceName: 'shrimp' },
     { name: 'Oysters (Raw)', serving: '6 medium (120g)', cal: 100, protein: 11, carbs: 6, fat: 3, grams: 120, perPiece: 20, pieceName: 'oyster' },
     { name: 'Tuna (Canned)', serving: '1 can (142g)', cal: 180, protein: 40, carbs: 0, fat: 2, grams: 142 },
-    { name: 'Salmon Fillet', serving: '6 oz (170g)', cal: 350, protein: 40, carbs: 0, fat: 20, grams: 170 },
-    { name: 'Tilapia', serving: '6 oz (170g)', cal: 220, protein: 45, carbs: 0, fat: 4, grams: 170 },
     { name: 'Cod Fillet', serving: '6 oz (170g)', cal: 140, protein: 30, carbs: 0, fat: 1, grams: 170 },
     { name: 'Trout', serving: '6 oz (170g)', cal: 250, protein: 35, carbs: 0, fat: 11, grams: 170 },
     { name: 'Lamb Chop', serving: '4 oz (113g)', cal: 230, protein: 28, carbs: 0, fat: 12, grams: 113 },
     { name: 'Duck Breast', serving: '4 oz (113g)', cal: 220, protein: 22, carbs: 0, fat: 15, grams: 113 },
     { name: 'Cornish Hen', serving: '½ bird (180g)', cal: 350, protein: 40, carbs: 0, fat: 20, grams: 180 },
     { name: 'Scallops (Cooked)', serving: '4 oz (113g)', cal: 120, protein: 23, carbs: 4, fat: 1, grams: 113, perPiece: 25, pieceName: 'scallop' },
-    { name: 'Crab Meat', serving: '4 oz (113g)', cal: 100, protein: 21, carbs: 0, fat: 1, grams: 113 },
-    { name: 'Lobster', serving: '4 oz (113g)', cal: 100, protein: 21, carbs: 0, fat: 1, grams: 113 },
     { name: 'Turkey Breast (Deli)', serving: '4 slices (112g)', cal: 120, protein: 22, carbs: 2, fat: 2, grams: 112, perPiece: 28, pieceName: 'slice' },
     { name: 'Bacon', serving: '3 slices (36g)', cal: 160, protein: 10, carbs: 0, fat: 13, grams: 36, perPiece: 12, pieceName: 'slice' },
     { name: 'Sausage Link', serving: '2 links (90g)', cal: 280, protein: 16, carbs: 2, fat: 22, grams: 90, perPiece: 45, pieceName: 'link' },
     { name: 'Lox (Smoked Salmon)', serving: '3 oz (85g)', cal: 99, protein: 15, carbs: 0, fat: 4, grams: 85 },
     { name: 'Pork Chop', serving: '6 oz (170g)', cal: 340, protein: 44, carbs: 0, fat: 16, grams: 170 },
-    { name: 'Turkey Breast (Deli)', serving: '4 slices (112g)', cal: 120, protein: 22, carbs: 2, fat: 2, grams: 112, perPiece: 28, pieceName: 'slice' },
-    { name: 'Bacon', serving: '3 slices (36g)', cal: 160, protein: 10, carbs: 0, fat: 13, grams: 36, perPiece: 12, pieceName: 'slice' },
-    { name: 'Sausage Link', serving: '2 links (90g)', cal: 280, protein: 16, carbs: 2, fat: 22, grams: 90, perPiece: 45, pieceName: 'link' },
-    { name: 'Cod Fillet', serving: '6 oz (170g)', cal: 140, protein: 30, carbs: 0, fat: 1, grams: 170 },
-    { name: 'Trout', serving: '6 oz (170g)', cal: 250, protein: 35, carbs: 0, fat: 11, grams: 170 },
-    { name: 'Lamb Chop', serving: '4 oz (113g)', cal: 230, protein: 28, carbs: 0, fat: 12, grams: 113 },
-    { name: 'Cornish Hen', serving: '½ bird (180g)', cal: 350, protein: 40, carbs: 0, fat: 20, grams: 180 },
 
     // ---- Eggs & Dairy ----
     { name: 'Whole Eggs', serving: '2 large', cal: 140, protein: 12, carbs: 1, fat: 10, grams: 100, perPiece: 50, pieceName: 'egg' },
@@ -60,7 +49,7 @@
     { name: 'Mozzarella Cheese', serving: '1 oz (28g)', cal: 85, protein: 6, carbs: 1, fat: 6, grams: 28 },
     { name: 'Feta Cheese', serving: '1 oz (28g)', cal: 75, protein: 4, carbs: 1, fat: 6, grams: 28 },
     { name: 'Parmesan (Grated)', serving: '2 tbsp (10g)', cal: 40, protein: 4, carbs: 0, fat: 3, grams: 10 },
-    { name: 'String Cheese', serving: '1 stick (28g)', cal: 80, protein: 7, carbs: 1, fat: 5, grams: 28 },
+    { name: 'String Cheese', serving: '1 stick (28g)', cal: 80, protein: 7, carbs: 1, fat: 5, grams: 28, perPiece: 28, pieceName: 'stick' },
 
     // ---- Plant-Based Proteins ----
     { name: 'Tofu (Firm)', serving: '½ cup (126g)', cal: 100, protein: 11, carbs: 3, fat: 5, grams: 126 },
@@ -107,11 +96,7 @@
     { name: 'Pineapple', serving: '1 cup chunks (165g)', cal: 82, protein: 1, carbs: 22, fat: 0.2, grams: 165 },
     { name: 'Mango', serving: '1 cup (165g)', cal: 99, protein: 1, carbs: 25, fat: 0.6, grams: 165 },
     { name: 'Grapes', serving: '1 cup (150g)', cal: 104, protein: 1, carbs: 27, fat: 0.2, grams: 150, perPiece: 5, pieceName: 'grape' },
-
-    // ---- Seafood & Shellfish ----
-    { name: 'Oysters (Raw)', serving: '6 medium (120g)', cal: 100, protein: 11, carbs: 6, fat: 3, grams: 120, perPiece: 20, pieceName: 'oyster' },
-    { name: 'Scallops (Cooked)', serving: '4 oz (113g)', cal: 120, protein: 23, carbs: 4, fat: 1, grams: 113, perPiece: 25, pieceName: 'scallop' },
-    { name: 'Crab Meat', serving: '4 oz (113g)', cal: 100, protein: 21, carbs: 0, fat: 1, grams: 113 },
+    { name: 'Watermelon', serving: '1 cup (150g)', cal: 46, protein: 1, carbs: 12, fat: 0.2, grams: 150 },
 
     // ---- Global Dishes & Snacking ----
     { name: 'Sushi (California Roll)', serving: '1 roll (8 pcs)', cal: 255, protein: 9, carbs: 38, fat: 7, grams: 200, perPiece: 25, pieceName: 'piece' },
@@ -125,6 +110,11 @@
     { name: 'Almonds', serving: '¼ cup (36g)', cal: 210, protein: 8, carbs: 7, fat: 18, grams: 36, perPiece: 1.2, pieceName: 'almond' },
     { name: 'Walnuts', serving: '¼ cup (28g)', cal: 185, protein: 4, carbs: 4, fat: 18, grams: 28 },
     { name: 'Peanut Butter', serving: '2 tbsp (32g)', cal: 190, protein: 8, carbs: 6, fat: 16, grams: 32 },
+
+    // ---- Fast Food & Common ----
+    { name: 'Grilled Chicken Sandwich', serving: '1 sandwich', cal: 420, protein: 32, carbs: 40, fat: 14 },
+    { name: 'Chicken Tenders', serving: '5 pieces', cal: 450, protein: 28, carbs: 30, fat: 24 },
+    { name: 'Pizza Slice (Cheese)', serving: '1 large slice', cal: 280, protein: 12, carbs: 34, fat: 10 },
     { name: 'Pizza Slice (Pepperoni)', serving: '1 large slice', cal: 310, protein: 13, carbs: 34, fat: 14 },
     { name: 'Burrito (Chicken)', serving: '1 burrito', cal: 650, protein: 35, carbs: 70, fat: 22 },
     { name: 'Burrito Bowl', serving: '1 bowl', cal: 600, protein: 38, carbs: 55, fat: 22 },
