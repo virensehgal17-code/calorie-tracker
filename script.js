@@ -234,6 +234,7 @@
   let selectedFood = null;
   let activeResultIndex = -1;
   let currentUnit = 'g';
+  let editingEntryId = null;
 
   // ==========================================
   // DOM References
@@ -506,6 +507,8 @@
   // ==========================================
 
   function openAddFoodModal(food) {
+    editingEntryId = null;
+    dom.confirmAddBtn.textContent = 'Add to Log';
     selectedFood = food;
     dom.addFoodTitle.textContent = food.name;
     dom.servingInput.value = '1';
@@ -600,7 +603,23 @@
       timestamp: Date.now(),
     };
 
-    addEntry(currentDate, entry);
+    if (editingEntryId) {
+      const logs = loadLogs();
+      const entries = logs[currentDate] || [];
+      const idx = entries.findIndex(x => x.id === editingEntryId);
+      if (idx !== -1) {
+        entry.id = editingEntryId;
+        entry.timestamp = entries[idx].timestamp || Date.now();
+        entries[idx] = entry;
+        logs[currentDate] = entries;
+        saveLogs(logs);
+      }
+      editingEntryId = null;
+      dom.confirmAddBtn.textContent = 'Add to Log';
+    } else {
+      addEntry(currentDate, entry);
+    }
+
     closeModal(dom.addFoodModal);
     selectedFood = null;
     refreshUI();
@@ -611,6 +630,8 @@
   // ==========================================
 
   function openCustomFoodModal() {
+    editingEntryId = null;
+    dom.confirmCustomBtn.textContent = 'Add to Log';
     dom.customName.value = '';
     dom.customCalories.value = '';
     dom.customProtein.value = '';
@@ -642,7 +663,23 @@
       timestamp: Date.now(),
     };
 
-    addEntry(currentDate, entry);
+    if (editingEntryId) {
+      const logs = loadLogs();
+      const entries = logs[currentDate] || [];
+      const idx = entries.findIndex(x => x.id === editingEntryId);
+      if (idx !== -1) {
+        entry.id = editingEntryId;
+        entry.timestamp = entries[idx].timestamp || Date.now();
+        entries[idx] = entry;
+        logs[currentDate] = entries;
+        saveLogs(logs);
+      }
+      editingEntryId = null;
+      dom.confirmCustomBtn.textContent = 'Add to Log';
+    } else {
+      addEntry(currentDate, entry);
+    }
+
     closeModal(dom.customFoodModal);
     refreshUI();
   }
@@ -677,7 +714,7 @@
     dom.logCount.textContent = `${entries.length} item${entries.length !== 1 ? 's' : ''}`;
 
     dom.logEntries.innerHTML = entries.map(e => `
-      <div class="log-entry" data-id="${e.id}">
+      <div class="log-entry" style="cursor: pointer;" data-id="${e.id}">
         <div class="log-entry-info">
           <div class="log-entry-name">${e.name}</div>
           <div class="log-entry-serving">${e.servings}× ${e.servingDesc}</div>
@@ -693,6 +730,38 @@
         </button>
       </div>
     `).join('');
+
+    // Edit handlers
+    dom.logEntries.querySelectorAll('.log-entry').forEach(entryEl => {
+      entryEl.addEventListener('click', (e) => {
+        if (e.target.closest('.log-entry-delete')) return;
+        
+        const entryId = parseFloat(entryEl.dataset.id);
+        const entries = getEntriesForDate(currentDate);
+        const entry = entries.find(x => x.id === entryId);
+        if (!entry) return;
+
+        if (entry.servingDesc === 'custom') {
+           openCustomFoodModal();
+           editingEntryId = entryId;
+           dom.confirmCustomBtn.textContent = 'Update Entry';
+           dom.customName.value = entry.name;
+           dom.customCalories.value = entry.calories;
+           dom.customProtein.value = entry.protein;
+           dom.customCarbs.value = entry.carbs;
+           dom.customFat.value = entry.fat;
+        } else {
+           const food = FOOD_DB.find(x => x.name === entry.name);
+           if (!food) return; 
+           
+           openAddFoodModal(food);
+           editingEntryId = entryId;
+           dom.confirmAddBtn.textContent = 'Update Entry';
+           dom.servingInput.value = entry.servings;
+           updateAddFoodMacros();
+        }
+      });
+    });
 
     // Delete handlers
     dom.logEntries.querySelectorAll('.log-entry-delete').forEach(btn => {
