@@ -627,16 +627,33 @@
     const sInput = parseFloat(dom.servingInput.value) || 1;
     const f = selectedFood;
 
-    let finalServings = sInput;
+    let totalGrams = 0;
+    if (currentUnit === 'pcs' && f.perPiece) {
+      totalGrams = sInput * f.perPiece;
+    } else if (currentUnit === 'oz') {
+      totalGrams = sInput * 28.3495;
+    } else if (currentUnit === 'lb') {
+      totalGrams = sInput * 453.592;
+    } else if (currentUnit === 'cup') {
+      totalGrams = sInput * 240;
+    } else {
+      totalGrams = sInput; // g or ml
+    }
+
+    const finalServings = totalGrams / f.grams;
     let label = `${sInput}× ${f.serving}`;
 
     if (currentUnit === 'pcs' && f.perPiece) {
-      const totalGrams = sInput * f.perPiece;
-      finalServings = totalGrams / f.grams;
       let pName = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
       if (f.pieceName === 'oyster' && sInput !== 1) pName = 'oysters';
       if (f.pieceName === 'shrimp') pName = 'shrimp';
       label = `${sInput} ${pName}`;
+    } else if (currentUnit === 'g') {
+      label = `${Math.round(sInput)}g ${f.name}`;
+    } else if (currentUnit === 'ml') {
+      label = `${Math.round(sInput)}ml ${f.name}`;
+    } else if (currentUnit === 'oz') {
+      label = `${sInput.toFixed(1).replace(/\.0$/, '')}oz ${f.name}`;
     }
 
     const entry = {
