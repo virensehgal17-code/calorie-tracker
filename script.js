@@ -274,15 +274,6 @@
     closeSettingsBtn: $('#close-settings-btn'),
     
     quizModal: $('#quiz-modal'),
-    openQuizBtn: $('#open-quiz-btn'),
-    closeQuizBtn: $('#close-quiz-btn'),
-    quizSex: $('#quiz-sex'),
-    quizAge: $('#quiz-age'),
-    quizWeight: $('#quiz-weight'),
-    quizHeight: $('#quiz-height'),
-    quizActivity: $('#quiz-activity'),
-    quizGoal: $('#quiz-goal'),
-    calcQuizBtn: $('#calc-quiz-btn'),
 
     goalCalories: $('#goal-calories'),
     goalProtein: $('#goal-protein'),
