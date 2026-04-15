@@ -277,6 +277,7 @@
     goalFat: $('#goal-fat'),
     saveSettingsBtn: $('#save-settings-btn'),
     clearTodayBtn: $('#clear-today-btn'),
+    hardRefreshBtn: $('#hard-refresh-btn'),
 
     addFoodModal: $('#add-food-modal'),
     addFoodTitle: $('#add-food-title'),
@@ -900,6 +901,21 @@
         clearDay(currentDate);
         closeModal(dom.settingsModal);
         refreshUI();
+      }
+    });
+
+    dom.hardRefreshBtn.addEventListener('click', () => {
+      if (confirm('Hard refresh the app? This will clear caches and reload. Your data will be safe.')) {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+              registration.unregister();
+            }
+            window.location.reload(true);
+          });
+        } else {
+          window.location.reload(true);
+        }
       }
     });
 
