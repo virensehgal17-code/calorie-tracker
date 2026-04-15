@@ -281,6 +281,7 @@
     saveSettingsBtn: $('#save-settings-btn'),
     clearTodayBtn: $('#clear-today-btn'),
     hardRefreshBtn: $('#hard-refresh-btn'),
+    presets: $('#presets'),
 
     addFoodModal: $('#add-food-modal'),
     addFoodTitle: $('#add-food-title'),
