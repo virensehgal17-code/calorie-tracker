@@ -473,7 +473,9 @@
       
       if (selectedFood) {
         if (u === 'pcs') {
-          btn.style.display = selectedFood.perPiece ? 'block' : 'none';
+          // Only show pcs tab when there are multiple pieces per serving
+          const piecesPerServing = selectedFood.perPiece ? selectedFood.grams / selectedFood.perPiece : 0;
+          btn.style.display = (selectedFood.perPiece && piecesPerServing > 1) ? 'block' : 'none';
         } else if (selectedFood.isLiquid && (u === 'lb' || u === 'g')) {
           btn.style.display = 'none';
         } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
