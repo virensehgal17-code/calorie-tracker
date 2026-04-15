@@ -289,12 +289,6 @@
     servingMinus: $('#serving-minus'),
     servingPlus: $('#serving-plus'),
     servingDescLabel: $('#serving-desc-label'),
-    amountValue: $('#amount-value'),
-    amountUnitLabel: $('#amount-unit-label'),
-    amountEquivalents: $('#amount-equivalents'),
-    unitBtns: $$('.unit-btn'),
-    addFoodTotals: $('#add-food-totals'),
-    confirmAddBtn: $('#confirm-add-btn'),
     closeAddFoodBtn: $('#close-add-food-btn'),
 
     customFoodModal: $('#custom-food-modal'),
@@ -1062,26 +1056,17 @@
       }
     });
 
-    dom.hardRefreshBtn.addEventListener('click', () => {
+    dom.hardRefreshBtn?.addEventListener('click', () => {
       if (confirm('Hard refresh the app? This will clear caches and reload. Your data will be safe.')) {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            for(let registration of registrations) {
-              registration.unregister();
-            }
-            window.location.reload(true);
-          });
-        } else {
-          window.location.reload(true);
-        }
+        window.location.reload(true);
       }
     });
 
     // Settings modal backdrop close
-    dom.settingsModal.querySelector('.modal-backdrop').addEventListener('click', () => closeModal(dom.settingsModal));
+    dom.settingsModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.settingsModal));
 
     // Preset buttons
-    $$('.preset-btn').forEach(btn => {
+    dom.presets?.querySelectorAll('.preset-btn')?.forEach(btn => {
       btn.addEventListener('click', () => {
         dom.goalCalories.value = btn.dataset.cal;
         dom.goalProtein.value = btn.dataset.p;
