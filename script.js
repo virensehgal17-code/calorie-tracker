@@ -537,14 +537,12 @@
           return;
         }
         // Liquid/Solid logic
-        if (selectedFood.isLiquid && (u === 'lb' || u === 'g' || u === 'pcs')) {
-          btn.style.display = 'none';
-        } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
-          btn.style.display = 'none';
-        } else {
-          btn.style.display = 'block';
         }
-       function updateAddFoodMacros() {
+      }
+    });
+  }
+
+  function updateAddFoodMacros() {
     if (!selectedFood) return;
     const sInput = parseFloat(dom.servingInput.value) || 0;
     const f = selectedFood;
