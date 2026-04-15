@@ -517,9 +517,8 @@
     dom.foodSearch.value = '';
     dom.searchResults.classList.add('hidden');
 
-    // Reset default unit based on liquid/solid
-    currentUnit = food.isLiquid ? 'ml' : 'g';
-    if (food.serving.includes('oz')) currentUnit = 'oz';
+    // Reset default unit to "srv" (servings) as the primary anchor
+    currentUnit = 'srv';
 
     // Back to serving multiplier logic: default to 1 full serving
     dom.servingInput.value = '1';
