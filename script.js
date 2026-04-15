@@ -1027,6 +1027,7 @@
         if (oldUnit === newUnit) return;
 
         const f = selectedFood;
+        if (!f) return;
         const oldVal = parseFloat(dom.servingInput.value) || 0;
         // 1. Convert oldVal to newVal context
         let newVal = oldVal;
