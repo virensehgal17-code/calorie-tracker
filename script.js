@@ -555,38 +555,45 @@
     const f = selectedFood;
 
     let totalGrams = 0;
-    let dispVal = 0;
-    let dispLabel = currentUnit;
-    let servingsForMacros = sInput;
-
-    // ----- Amount & Macro Calculation Logic -----
     if (currentUnit === 'pcs' && f.perPiece) {
       totalGrams = sInput * f.perPiece;
-      servingsForMacros = totalGrams / f.grams;
-      dispVal = sInput;
+    } else if (currentUnit === 'oz') {
+      totalGrams = sInput * 28.3495;
+    } else if (currentUnit === 'lb') {
+      totalGrams = sInput * 453.592;
+    } else if (currentUnit === 'cup') {
+      totalGrams = sInput * 240;
+    } else if (currentUnit === 'g' || currentUnit === 'ml') {
+      totalGrams = sInput;
+    } else {
+      totalGrams = sInput * f.grams; // fallback / default serving multiplier
+    }
+
+    const servingsForMacros = totalGrams / f.grams;
+
+    // ----- UI Labels -----
+    let dispVal = sInput;
+    let dispLabel = currentUnit;
+
+    if (currentUnit === 'pcs' && f.perPiece) {
       dispLabel = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
-      // Special pluralization for UI
       if (f.pieceName === 'oyster' && sInput !== 1) dispLabel = 'oysters';
       if (f.pieceName === 'shrimp') dispLabel = 'shrimp';
-    } else {
-      totalGrams = f.grams * sInput;
-      servingsForMacros = sInput;
-      if (currentUnit === 'g') {
-        dispVal = Math.round(totalGrams);
-        dispLabel = 'grams';
-      } else if (currentUnit === 'ml') {
-        dispVal = Math.round(totalGrams);
-        dispLabel = 'ml';
-      } else if (currentUnit === 'oz') {
-        dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
-        dispLabel = 'ounces';
-      } else if (currentUnit === 'lb') {
-        dispVal = (totalGrams / 453.592).toFixed(2);
-        dispLabel = 'pounds';
-      } else if (currentUnit === 'cup') {
-        dispVal = (totalGrams / 240).toFixed(2);
-        dispLabel = 'cups';
-      }
+    } else if (currentUnit === 'g') {
+      dispVal = Math.round(sInput);
+      dispLabel = 'grams';
+    } else if (currentUnit === 'ml') {
+      dispVal = Math.round(sInput);
+      dispLabel = 'ml';
+    } else if (currentUnit === 'oz') {
+      dispVal = sInput.toFixed(1).replace(/\.0$/, '');
+      dispLabel = 'ounces';
+    } else if (currentUnit === 'lb') {
+      dispVal = sInput.toFixed(2);
+      dispLabel = 'pounds';
+    } else if (currentUnit === 'cup') {
+      dispVal = sInput.toFixed(2);
+      dispLabel = 'cups';
     }
 
     dom.amountValue.textContent = dispVal;
