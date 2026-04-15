@@ -1013,30 +1013,21 @@
 
         const f = selectedFood;
         const oldVal = parseFloat(dom.servingInput.value) || 0;
-        if (!f || oldVal <= 0) {
-          currentUnit = newUnit;
-          updateUnitBtns();
-          updateAddFoodMacros();
-          return;
+        // 1. Convert oldVal to newVal context
+        let newVal = oldVal;
+        if (f.perPiece) {
+          const piecesPerServing = f.grams / f.perPiece;
+          // Switching TO pcs
+          if (newUnit === 'pcs' && oldUnit !== 'pcs') {
+            newVal = oldVal * piecesPerServing;
+          }
+          // Switching FROM pcs
+          else if (oldUnit === 'pcs' && newUnit !== 'pcs') {
+            newVal = oldVal / piecesPerServing;
+          }
         }
 
-        // 1. Convert oldVal to standard grams
-        let g = 0;
-        if (oldUnit === 'pcs' && f.perPiece) g = oldVal * f.perPiece;
-        else if (oldUnit === 'oz') g = oldVal * 28.3495;
-        else if (oldUnit === 'lb') g = oldVal * 453.592;
-        else if (oldUnit === 'cup') g = oldVal * 240;
-        else g = oldVal; 
-
-        // 2. Convert standard grams to newVal
-        let newVal = 0;
-        if (newUnit === 'pcs' && f.perPiece) newVal = g / f.perPiece;
-        else if (newUnit === 'oz') newVal = g / 28.3495;
-        else if (newUnit === 'lb') newVal = g / 453.592;
-        else if (newUnit === 'cup') newVal = g / 240;
-        else newVal = g; 
-
-        dom.servingInput.value = newVal.toFixed(1).replace(/\.0$/, '');
+        dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         currentUnit = newUnit;
         updateUnitBtns();
         updateAddFoodMacros();
