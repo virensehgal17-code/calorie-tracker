@@ -454,10 +454,10 @@
     dom.foodSearch.value = '';
     dom.searchResults.classList.add('hidden');
 
-    // Reset default unit to "srv" (servings) as the primary anchor
-    currentUnit = 'srv';
+    // Default display unit: grams for solids, ml for liquids
+    currentUnit = food.isLiquid ? 'ml' : 'g';
 
-    // Back to serving multiplier logic: default to 1 full serving
+    // Servings input always starts at 1
     dom.servingInput.value = '1';
 
     updateUnitBtns();
@@ -487,32 +487,21 @@
 
   function updateAddFoodMacros() {
     if (!selectedFood) return;
-    const sInput = parseFloat(dom.servingInput.value) || 0;
+    const servings = parseFloat(dom.servingInput.value) || 0;
     const f = selectedFood;
 
-    let totalGrams = 0;
-    let servingsForMacros = 0;
+    // Servings input ALWAYS means servings — macros scale directly
+    const servingsForMacros = servings;
+    const totalGrams = servings * f.grams;
 
-    if (currentUnit === 'pcs' && f.perPiece) {
-      totalGrams = sInput * f.perPiece;
-      servingsForMacros = totalGrams / f.grams;
-    } else {
-      totalGrams = sInput * f.grams;
-      servingsForMacros = sInput;
-    }
-
-    // ----- UI Display Values -----
+    // ----- UI Display: show amount in the selected display unit -----
     let dispVal = 0;
     let dispLabel = currentUnit;
 
-    if (currentUnit === 'srv') {
-      dispVal = sInput.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
-      dispLabel = sInput === 1 ? 'serving' : 'servings';
-    } else if (currentUnit === 'pcs' && f.perPiece) {
-      dispVal = sInput;
-      dispLabel = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
-      if (f.pieceName === 'oyster' && sInput !== 1) dispLabel = 'oysters';
-      if (f.pieceName === 'shrimp') dispLabel = 'shrimp';
+    if (currentUnit === 'pcs' && f.perPiece) {
+      const pCount = totalGrams / f.perPiece;
+      dispVal = Number.isInteger(pCount) ? pCount : pCount.toFixed(1).replace(/\.0$/, '');
+      dispLabel = pCount === 1 ? (f.pieceName || 'piece') : getPluralPieceName(f, pCount);
     } else if (currentUnit === 'g' || currentUnit === 'ml') {
       dispVal = Math.round(totalGrams);
       dispLabel = currentUnit === 'g' ? 'grams' : 'ml';
@@ -520,10 +509,10 @@
       dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
       dispLabel = 'ounces';
     } else if (currentUnit === 'lb') {
-      dispVal = (totalGrams / 453.592).toFixed(2);
+      dispVal = (totalGrams / 453.592).toFixed(2).replace(/\.00$/, '');
       dispLabel = 'pounds';
     } else if (currentUnit === 'cup') {
-      dispVal = (totalGrams / 240).toFixed(2);
+      dispVal = (totalGrams / 240).toFixed(2).replace(/\.00$/, '');
       dispLabel = 'cups';
     }
 
@@ -531,23 +520,25 @@
     dom.amountUnitLabel.textContent = dispLabel;
     dom.servingDescLabel.textContent = `(1 serving = ${f.serving})`;
 
-    // ----- Equivalents Logic -----
+    // ----- Equivalents: show other useful representations -----
     let eqParts = [];
-    const srvNum = servingsForMacros.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
-    if (currentUnit !== 'srv') eqParts.push(`≈ ${srvNum} servings`);
-    
+
     if (currentUnit !== 'g' && currentUnit !== 'ml') {
       eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
     }
 
     if (f.perPiece && currentUnit !== 'pcs') {
-      const pCount = Math.round(totalGrams / f.perPiece);
-      let pLabel = f.pieceName || 'piece';
-      if (pLabel === 'oyster' && pCount !== 1) pLabel = 'oysters';
-      else if (pCount !== 1 && pLabel !== 'shrimp') pLabel += 's';
-      eqParts.push(`${pCount} ${pLabel}`);
+      const pCount = totalGrams / f.perPiece;
+      const pRounded = Number.isInteger(pCount) ? pCount : Math.round(pCount);
+      eqParts.push(`${pRounded} ${getPluralPieceName(f, pRounded)}`);
     }
-    dom.amountEquivalents.textContent = eqParts.join(' | ');
+
+    if (currentUnit === 'pcs' && f.perPiece) {
+      // When showing pieces, also show grams equivalent
+      eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
+    }
+
+    dom.amountEquivalents.textContent = eqParts.join(' · ');
 
     // ----- Macros Preview Display -----
     dom.addFoodMacros.innerHTML = `
@@ -565,46 +556,45 @@
     `;
   }
 
+  function getPluralPieceName(f, count) {
+    const name = f.pieceName || 'piece';
+    if (name === 'shrimp') return 'shrimp';
+    if (count === 1) return name;
+    if (name === 'oyster') return 'oysters';
+    return name + 's';
+  }
+
   function confirmAddFood() {
     if (!selectedFood) return;
-    const sInput = parseFloat(dom.servingInput.value) || 1;
+    const servings = parseFloat(dom.servingInput.value) || 1;
     const f = selectedFood;
+    const totalGrams = servings * f.grams;
 
-    let finalServings = 0;
-    if (currentUnit === 'pcs' && f.perPiece) {
-      finalServings = (sInput * f.perPiece) / f.grams;
-    } else {
-      finalServings = sInput;
-    }
-
-    let label = `${sInput.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '')}× ${f.serving}`;
+    // Build display label based on current unit view
+    let label = `${servings.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '')}× ${f.serving}`;
 
     if (currentUnit === 'pcs' && f.perPiece) {
-      let pName = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
-      if (f.pieceName === 'oyster' && sInput !== 1) pName = 'oysters';
-      if (f.pieceName === 'shrimp') pName = 'shrimp';
-      label = `${sInput} ${pName}`;
-    } else {
-      const totalGrams = sInput * f.grams;
-      if (currentUnit === 'g') {
-        label = `${Math.round(totalGrams)}g ${f.name}`;
-      } else if (currentUnit === 'ml') {
-        label = `${Math.round(totalGrams)}ml ${f.name}`;
-      } else if (currentUnit === 'oz') {
-        const ozValue = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
-        label = `${ozValue}oz ${f.name}`;
-      }
+      const pCount = totalGrams / f.perPiece;
+      const pRounded = Number.isInteger(pCount) ? pCount : +pCount.toFixed(1);
+      label = `${pRounded} ${getPluralPieceName(f, pRounded)}`;
+    } else if (currentUnit === 'g') {
+      label = `${Math.round(totalGrams)}g ${f.name}`;
+    } else if (currentUnit === 'ml') {
+      label = `${Math.round(totalGrams)}ml ${f.name}`;
+    } else if (currentUnit === 'oz') {
+      const ozValue = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
+      label = `${ozValue}oz ${f.name}`;
     }
 
     const entry = {
       name: f.name,
-      servings: finalServings,
+      servings: servings,
       displayLabel: label,
       servingDesc: f.serving,
-      calories: Math.round(f.cal * finalServings),
-      protein: Math.round(f.protein * finalServings),
-      carbs: Math.round(f.carbs * finalServings),
-      fat: Math.round(f.fat * finalServings),
+      calories: Math.round(f.cal * servings),
+      protein: Math.round(f.protein * servings),
+      carbs: Math.round(f.carbs * servings),
+      fat: Math.round(f.fat * servings),
       timestamp: Date.now(),
     };
 
@@ -1030,24 +1020,13 @@
       dom.prevDayBtn?.addEventListener('click', () => navigateDate(-1));
       dom.nextDayBtn?.addEventListener('click', () => navigateDate(1));
 
-      // Unit buttons switcher
+      // Unit buttons switcher — only changes display unit, not servings
       dom.unitBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          const f = selectedFood;
-          if (!f) return;
-          const oldUnit = currentUnit;
+          if (!selectedFood) return;
           const newUnit = btn.dataset.unit;
-          if (oldUnit === newUnit) return;
+          if (currentUnit === newUnit) return;
 
-          const oldVal = parseFloat(dom.servingInput.value) || 0;
-          let newVal = oldVal;
-          if (f.perPiece) {
-            const piecesPerServing = f.grams / f.perPiece;
-            if (newUnit === 'pcs' && oldUnit !== 'pcs') newVal = oldVal * piecesPerServing;
-            else if (oldUnit === 'pcs' && newUnit !== 'pcs') newVal = oldVal / piecesPerServing;
-          }
-
-          dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
           currentUnit = newUnit;
           updateUnitBtns();
           updateAddFoodMacros();
