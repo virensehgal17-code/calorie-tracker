@@ -272,6 +272,18 @@
 
     settingsModal: $('#settings-modal'),
     closeSettingsBtn: $('#close-settings-btn'),
+    
+    quizModal: $('#quiz-modal'),
+    openQuizBtn: $('#open-quiz-btn'),
+    closeQuizBtn: $('#close-quiz-btn'),
+    quizSex: $('#quiz-sex'),
+    quizAge: $('#quiz-age'),
+    quizWeight: $('#quiz-weight'),
+    quizHeight: $('#quiz-height'),
+    quizActivity: $('#quiz-activity'),
+    quizGoal: $('#quiz-goal'),
+    calcQuizBtn: $('#calc-quiz-btn'),
+
     goalCalories: $('#goal-calories'),
     goalProtein: $('#goal-protein'),
     goalCarbs: $('#goal-carbs'),
@@ -1000,6 +1012,66 @@
         dom.goalFat.value = btn.dataset.f;
         updatePresetActive();
       });
+    });
+
+    // Smart Macro Quiz Modal Flow
+    document.addEventListener('click', (e) => {
+      const openBtn = e.target.closest('#open-quiz-btn');
+      if (openBtn) {
+        closeModal(dom.settingsModal);
+        openModal(dom.quizModal);
+        return;
+      }
+
+      const closeBtn = e.target.closest('#close-quiz-btn');
+      const backdrop = e.target.classList.contains('modal-backdrop') && e.target.closest('#quiz-modal');
+      if (closeBtn || backdrop) {
+        closeModal(dom.quizModal);
+        return;
+      }
+
+      const calcBtn = e.target.closest('#calc-quiz-btn');
+      if (calcBtn) {
+        // Pull values fresh from DOM to avoid any null/stale references
+        const sex = $('#quiz-sex').value;
+        const age = parseInt($('#quiz-age').value) || 25;
+        const weightLbs = parseFloat($('#quiz-weight').value) || 160;
+        const heightInches = parseFloat($('#quiz-height').value) || 68;
+        const activityMult = parseFloat($('#quiz-activity').value) || 1.55;
+        const goalAdjustment = parseFloat($('#quiz-goal').value) || 250;
+
+        const weightKg = weightLbs / 2.20462;
+        const heightCm = heightInches * 2.54;
+
+        // Mifflin-St Jeor Equation
+        let bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age);
+        bmr += (sex === 'male') ? 5 : -161;
+
+        const tdee = bmr * activityMult;
+        const targetCalories = Math.round(tdee + goalAdjustment);
+
+        // Protein: ~1g per lb of current weight (rounded to nearest 5)
+        const targetProtein = Math.round(weightLbs / 5) * 5;
+
+        // Fat: ~25% of total calories (9 calories per gram)
+        const targetFat = Math.round((targetCalories * 0.25) / 9);
+
+        // Carbs: Remaining calories (4 calories per gram)
+        const remainingCals = targetCalories - (targetProtein * 4) - (targetFat * 9);
+        const targetCarbs = Math.max(0, Math.round(remainingCals / 4));
+
+        // Immediately apply and refresh
+        saveGoals({
+          calories: targetCalories,
+          protein: targetProtein,
+          carbs: targetCarbs,
+          fat: targetFat
+        });
+        
+        updateGoalLabels();
+        refreshUI();
+        closeModal(dom.quizModal);
+      }
     });
 
     // Search
