@@ -291,6 +291,7 @@
     servingDescLabel: $('#serving-desc-label'),
     amountValue: $('#amount-value'),
     amountUnitLabel: $('#amount-unit-label'),
+    amountEquivalents: $('#amount-equivalents'),
     unitBtns: $$('.unit-btn'),
     addFoodTotals: $('#add-food-totals'),
     confirmAddBtn: $('#confirm-add-btn'),
