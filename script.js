@@ -1157,15 +1157,13 @@
 
       dom.servingMinus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        let step = (currentUnit === 'pcs') ? 1 : 0.25;
-        dom.servingInput.value = Math.max(0, v - step).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+        dom.servingInput.value = Math.max(0, v - 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         updateAddFoodMacros();
       });
 
       dom.servingPlus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        let step = (currentUnit === 'pcs') ? 1 : 0.25;
-        dom.servingInput.value = Math.min(200, v + step).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+        dom.servingInput.value = Math.min(200, v + 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         updateAddFoodMacros();
       });
 
