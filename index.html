@@ -172,6 +172,61 @@
       </div>
     </div>
 
+    <!-- Smart Macro Quiz Modal -->
+    <div id="quiz-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Smart Macro Quiz</h2>
+          <button id="close-quiz-btn" class="close-btn" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.4;">Fill out your details to calculate the optimal daily targets to reach your goals.</p>
+          <div class="goal-grid">
+            <div class="goal-input-group">
+              <label for="quiz-sex">Sex</label>
+              <select id="quiz-sex">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+            <div class="goal-input-group">
+              <label for="quiz-age">Age</label>
+              <input type="number" id="quiz-age" value="25" min="15" max="100" />
+            </div>
+            <div class="goal-input-group">
+              <label for="quiz-weight">Weight (lbs)</label>
+              <input type="number" id="quiz-weight" value="160" min="80" max="400" />
+            </div>
+            <div class="goal-input-group">
+              <label for="quiz-height">Height (in)</label>
+              <input type="number" id="quiz-height" value="68" min="48" max="96" />
+            </div>
+            <div class="goal-input-group full">
+              <label for="quiz-activity">Activity Level</label>
+              <select id="quiz-activity">
+                <option value="1.2">Sedentary (Little/No exercise)</option>
+                <option value="1.375">Light (1-3 days/week)</option>
+                <option value="1.55" selected>Moderate (3-5 days/week)</option>
+                <option value="1.725">Active (6-7 days/week)</option>
+                <option value="1.9">Very Active (Physical job/2x day)</option>
+              </select>
+            </div>
+            <div class="goal-input-group full" style="margin-bottom: 12px;">
+              <label for="quiz-goal">Main Goal</label>
+              <select id="quiz-goal">
+                <option value="-500">Cut (Lose 1lb/week)</option>
+                <option value="0">Maintain Weight</option>
+                <option value="250" selected>Lean Bulk (+0.5lb/week)</option>
+                <option value="500">Aggressive Bulk (+1lb/week)</option>
+              </select>
+            </div>
+          </div>
+          <button id="calc-quiz-btn" class="primary-btn">Calculate & Apply</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Add Food Modal (from search results) -->
     <div id="add-food-modal" class="modal hidden">
       <div class="modal-backdrop"></div>
