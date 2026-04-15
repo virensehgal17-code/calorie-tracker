@@ -815,6 +815,24 @@ button {
   background: rgba(239,68,68,0.08);
 }
 
+.secondary-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius-full);
+  background: none;
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 8px;
+  transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
 /* ==========================================
    Amount Display & Unit Switcher
    ========================================== */
