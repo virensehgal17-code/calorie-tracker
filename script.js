@@ -194,6 +194,25 @@
   ];
 
   // ==========================================
+  // Enhance DB with Exact Base Weights
+  // ==========================================
+  FOOD_DB.forEach(f => {
+    f.isLiquid = f.serving.includes('ml') || (f.serving.includes('oz') && /milk|juice|smoothie|drink|shake|soda|coffee|latte|gatorade/i.test(f.name));
+    f.grams = 100; // default safe fallback
+
+    let m = f.serving.match(/\((\d+)g\)/);
+    if (m) { f.grams = parseInt(m[1], 10); return; }
+
+    m = f.serving.match(/\((\d+)ml\)/);
+    if (m) { f.grams = parseInt(m[1], 10); f.isLiquid = true; return; }
+
+    m = f.serving.match(/([\d\.]+)\s*oz/);
+    if (m) { f.grams = Math.round(parseFloat(m[1]) * 28.3495); return; }
+
+    if (f.name.toLowerCase().includes('egg')) { f.grams = 50; return; } // roughly 1 large egg
+  });
+
+  // ==========================================
   // State
   // ==========================================
 
@@ -206,6 +225,7 @@
   let goals = loadGoals();
   let selectedFood = null;
   let activeResultIndex = -1;
+  let currentUnit = 'g';
 
   // ==========================================
   // DOM References
@@ -256,6 +276,10 @@
     servingInput: $('#serving-input'),
     servingMinus: $('#serving-minus'),
     servingPlus: $('#serving-plus'),
+    servingDescLabel: $('#serving-desc-label'),
+    amountValue: $('#amount-value'),
+    amountUnitLabel: $('#amount-unit-label'),
+    unitBtns: $$('.unit-btn'),
     addFoodTotals: $('#add-food-totals'),
     confirmAddBtn: $('#confirm-add-btn'),
     closeAddFoodBtn: $('#close-add-food-btn'),
@@ -479,8 +503,29 @@
     dom.foodSearch.value = '';
     dom.searchResults.classList.add('hidden');
 
+    // Reset default unit based on liquid/solid
+    currentUnit = food.isLiquid ? 'ml' : 'g';
+    if (food.serving.includes('oz')) currentUnit = 'oz';
+    updateUnitBtns();
+
     updateAddFoodMacros();
     openModal(dom.addFoodModal);
+  }
+
+  function updateUnitBtns() {
+    dom.unitBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.unit === currentUnit);
+      if (selectedFood) {
+        // Hide liquid units for solids and vice versa
+        if (selectedFood.isLiquid && (btn.dataset.unit === 'lb' || btn.dataset.unit === 'g')) {
+          btn.style.display = 'none';
+        } else if (!selectedFood.isLiquid && (btn.dataset.unit === 'ml' || btn.dataset.unit === 'cup')) {
+          btn.style.display = 'none';
+        } else {
+          btn.style.display = 'block';
+        }
+      }
+    });
   }
 
   function updateAddFoodMacros() {
@@ -488,6 +533,33 @@
     const s = parseFloat(dom.servingInput.value) || 0;
     const f = selectedFood;
 
+    // ----- Amount Display Logic -----
+    let totalGrams = f.grams * s;
+    let dispVal = 0;
+    let dispLabel = currentUnit;
+
+    if (currentUnit === 'g') {
+      dispVal = Math.round(totalGrams);
+      dispLabel = 'grams';
+    } else if (currentUnit === 'ml') {
+      dispVal = Math.round(totalGrams);
+      dispLabel = 'ml';
+    } else if (currentUnit === 'oz') {
+      dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
+      dispLabel = 'ounces';
+    } else if (currentUnit === 'lb') {
+      dispVal = (totalGrams / 453.592).toFixed(2);
+      dispLabel = 'pounds';
+    } else if (currentUnit === 'cup') {
+      dispVal = (totalGrams / 240).toFixed(2);
+      dispLabel = 'cups';
+    }
+
+    dom.amountValue.textContent = dispVal;
+    dom.amountUnitLabel.textContent = dispLabel;
+    dom.servingDescLabel.textContent = `(1 serving = ${f.serving})`;
+
+    // ----- Macros Preview Display -----
     dom.addFoodMacros.innerHTML = `
       <div class="macro-preview-item mp-cal"><span class="mp-value">${f.cal}</span><span class="mp-label">cal/srv</span></div>
       <div class="macro-preview-item mp-p"><span class="mp-value">${f.protein}g</span><span class="mp-label">protein</span></div>
