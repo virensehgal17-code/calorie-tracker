@@ -603,8 +603,6 @@
       <div class="macro-total-item mt-c"><span class="mt-value">${Math.round(f.carbs * servingsForMacros)}g</span><span class="mt-label">carbs</span></div>
       <div class="macro-total-item mt-f"><span class="mt-value">${Math.round(f.fat * servingsForMacros)}g</span><span class="mt-label">fat</span></div>
     `;
-  }/div>
-    `;
   }
 
   function confirmAddFood() {
