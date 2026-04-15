@@ -531,10 +531,16 @@
     dom.unitBtns.forEach(btn => {
       btn.classList.toggle('active', btn.dataset.unit === currentUnit);
       if (selectedFood) {
-        // Hide liquid units for solids and vice versa
-        if (selectedFood.isLiquid && (btn.dataset.unit === 'lb' || btn.dataset.unit === 'g')) {
+        const u = btn.dataset.unit;
+        // Piece logic
+        if (u === 'pcs') {
+          btn.style.display = selectedFood.perPiece ? 'block' : 'none';
+          return;
+        }
+        // Liquid/Solid logic
+        if (selectedFood.isLiquid && (u === 'lb' || u === 'g' || u === 'pcs')) {
           btn.style.display = 'none';
-        } else if (!selectedFood.isLiquid && (btn.dataset.unit === 'ml' || btn.dataset.unit === 'cup')) {
+        } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
           btn.style.display = 'none';
         } else {
           btn.style.display = 'block';
@@ -592,17 +598,30 @@
 
   function confirmAddFood() {
     if (!selectedFood) return;
-    const s = parseFloat(dom.servingInput.value) || 1;
+    const sInput = parseFloat(dom.servingInput.value) || 1;
     const f = selectedFood;
+
+    let finalServings = sInput;
+    let label = `${sInput}× ${f.serving}`;
+
+    if (currentUnit === 'pcs' && f.perPiece) {
+      const totalGrams = sInput * f.perPiece;
+      finalServings = totalGrams / f.grams;
+      let pName = sInput === 1 ? (f.pieceName || 'piece') : (f.pieceName ? f.pieceName + 's' : 'pieces');
+      if (f.pieceName === 'oyster' && sInput !== 1) pName = 'oysters';
+      if (f.pieceName === 'shrimp') pName = 'shrimp';
+      label = `${sInput} ${pName}`;
+    }
 
     const entry = {
       name: f.name,
-      servings: s,
+      servings: finalServings,
+      displayLabel: label,
       servingDesc: f.serving,
-      calories: Math.round(f.cal * s),
-      protein: Math.round(f.protein * s),
-      carbs: Math.round(f.carbs * s),
-      fat: Math.round(f.fat * s),
+      calories: Math.round(f.cal * finalServings),
+      protein: Math.round(f.protein * finalServings),
+      carbs: Math.round(f.carbs * finalServings),
+      fat: Math.round(f.fat * finalServings),
       timestamp: Date.now(),
     };
 
@@ -720,7 +739,7 @@
       <div class="log-entry" style="cursor: pointer;" data-id="${e.id}">
         <div class="log-entry-info">
           <div class="log-entry-name">${e.name}</div>
-          <div class="log-entry-serving">${e.servings}× ${e.servingDesc}</div>
+          <div class="log-entry-serving">${e.displayLabel || (e.servings + '× ' + e.servingDesc)}</div>
         </div>
         <div class="log-entry-macros">
           <span class="macro-cal">${e.calories}</span>
