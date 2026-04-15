@@ -537,6 +537,13 @@
           return;
         }
         // Liquid/Solid logic
+        // Liquid/Solid logic
+        if (selectedFood.isLiquid && (u === 'lb' || u === 'g' || u === 'pcs')) {
+          btn.style.display = 'none';
+        } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
+          btn.style.display = 'none';
+        } else {
+          btn.style.display = 'block';
         }
       }
     });
