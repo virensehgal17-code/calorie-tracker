@@ -289,6 +289,12 @@
     servingMinus: $('#serving-minus'),
     servingPlus: $('#serving-plus'),
     servingDescLabel: $('#serving-desc-label'),
+    amountValue: $('#amount-value'),
+    amountUnitLabel: $('#amount-unit-label'),
+    amountEquivalents: $('#amount-equivalents'),
+    unitBtns: $$('.unit-btn'),
+    addFoodTotals: $('#add-food-totals'),
+    confirmAddBtn: $('#confirm-add-btn'),
     closeAddFoodBtn: $('#close-add-food-btn'),
 
     customFoodModal: $('#custom-food-modal'),
