@@ -520,12 +520,8 @@
     currentUnit = food.isLiquid ? 'ml' : 'g';
     if (food.serving.includes('oz')) currentUnit = 'oz';
 
-    // Set initial value to the food's base grams/oz/ml (1 full serving)
-    if (currentUnit === 'oz') {
-      dom.servingInput.value = (food.grams / 28.3495).toFixed(1).replace(/\.0$/, '');
-    } else {
-      dom.servingInput.value = food.grams;
-    }
+    // Back to serving multiplier logic: default to 1 full serving
+    dom.servingInput.value = '1';
 
     updateUnitBtns();
     updateAddFoodMacros();
