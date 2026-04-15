@@ -187,6 +187,13 @@
     { name: 'Yogurt Parfait', serving: '1 cup', cal: 280, protein: 16, carbs: 40, fat: 6 },
     { name: 'Bagel w/ Cream Cheese', serving: '1 bagel', cal: 380, protein: 12, carbs: 55, fat: 12 },
 
+    // ---- Snack Combos ----
+    { name: 'Chips & Guacamole', serving: '1 serving (110g)', cal: 250, protein: 3, carbs: 20, fat: 19 },
+    { name: 'String Cheese & Almonds', serving: '1 stick + ¼ cup', cal: 290, protein: 15, carbs: 8, fat: 23 },
+    { name: 'Apple & Peanut Butter', serving: '1 apple + 2 tbsp', cal: 285, protein: 8, carbs: 32, fat: 16 },
+    { name: 'Greek Yogurt & Berries', serving: '1 cup + ½ cup', cal: 172, protein: 22, carbs: 18, fat: 0 },
+    { name: 'Beef Jerky & Pretzels', serving: '1 oz + 1 oz', cal: 190, protein: 16, carbs: 26, fat: 2 },
+
     // ---- Desserts ----
     { name: 'Ice Cream (Vanilla)', serving: '½ cup (66g)', cal: 140, protein: 2, carbs: 16, fat: 7 },
     { name: 'Cookie (Chocolate Chip)', serving: '1 large', cal: 220, protein: 2, carbs: 30, fat: 10 },
