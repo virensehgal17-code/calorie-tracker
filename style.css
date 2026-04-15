@@ -816,6 +816,72 @@ button {
 }
 
 /* ==========================================
+   Amount Display & Unit Switcher
+   ========================================== */
+
+#amount-display {
+  text-align: center;
+  padding: 16px 0 4px;
+}
+
+#amount-value {
+  font-size: 2.8rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+  background: var(--gradient-green);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+#amount-unit-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+#unit-switcher {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin: 12px 0 16px;
+  background: var(--bg-input);
+  border-radius: var(--radius-full);
+  padding: 3px;
+}
+
+.unit-btn {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.unit-btn:hover {
+  color: var(--text-secondary);
+}
+
+.unit-btn.active {
+  background: var(--bg-card-hover);
+  color: var(--accent-green);
+  box-shadow: var(--shadow-sm);
+}
+
+#serving-desc-label {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin: -4px 0 12px;
+  font-style: italic;
+}
+
+/* ==========================================
    Add Food Modal specifics
    ========================================== */
 
