@@ -1179,27 +1179,15 @@
     dom.servingInput.addEventListener('input', updateAddFoodMacros);
     dom.servingMinus.addEventListener('click', () => {
       const v = parseFloat(dom.servingInput.value) || 0;
-      let step = 1;
-      if (currentUnit === 'g' || currentUnit === 'ml') step = 10;
-      if (currentUnit === 'oz') step = 0.5;
-      if (currentUnit === 'lb') step = 0.1;
-      if (currentUnit === 'cup') step = 0.25;
-      if (currentUnit === 'pcs') step = 1;
-
+      let step = (currentUnit === 'pcs') ? 1 : 0.25;
       const newVal = Math.max(0, v - step);
       dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
       updateAddFoodMacros();
     });
     dom.servingPlus.addEventListener('click', () => {
       const v = parseFloat(dom.servingInput.value) || 0;
-      let step = 1;
-      if (currentUnit === 'g' || currentUnit === 'ml') step = 10;
-      if (currentUnit === 'oz') step = 0.5;
-      if (currentUnit === 'lb') step = 0.1;
-      if (currentUnit === 'cup') step = 0.25;
-      if (currentUnit === 'pcs') step = 1;
-
-      const newVal = Math.min(2000, v + step);
+      let step = (currentUnit === 'pcs') ? 1 : 0.25;
+      const newVal = Math.min(200, v + step);
       dom.servingInput.value = newVal.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
       updateAddFoodMacros();
     });
