@@ -823,10 +823,6 @@ button {
   user-select: none;
 }
 
-#creatine-check {
-  display: none;
-}
-
 .creatine-checkbox-custom {
   width: 22px;
   height: 22px;
@@ -840,12 +836,12 @@ button {
   transition: all 0.2s;
 }
 
-#creatine-check:checked + .creatine-checkbox-custom {
+.creatine-checkbox-custom.checked {
   background: var(--accent-green);
   border-color: var(--accent-green);
 }
 
-#creatine-check:checked + .creatine-checkbox-custom::after {
+.creatine-checkbox-custom.checked::after {
   content: '✓';
   color: #fff;
   font-size: 14px;
@@ -859,15 +855,9 @@ button {
   flex: 1;
 }
 
-#creatine-status {
-  font-size: 0.75rem;
-  font-weight: 500;
+#creatine-reminder.taken .creatine-text {
   color: var(--text-muted);
-  transition: all 0.2s;
-}
-
-#creatine-reminder.taken #creatine-status {
-  color: var(--accent-green);
+  text-decoration: line-through;
 }
 
 /* Toggle Switch (Settings) */
