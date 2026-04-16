@@ -1226,10 +1226,14 @@
         });
       });
 
-      // Creatine toggle in settings — only previews, saved on Save Changes
+      // Creatine toggle in settings — saves immediately like diet filter
       const creatineToggle = document.getElementById('creatine-toggle');
       if (creatineToggle) {
         creatineToggle.checked = isCreatineEnabled();
+        creatineToggle.addEventListener('change', () => {
+          setCreatineEnabled(creatineToggle.checked);
+          refreshUI();
+        });
       }
 
       // Creatine daily checkbox - click toggles taken state
