@@ -1006,6 +1006,9 @@
       fat: parseInt(dom.goalFat.value) || DEFAULT_GOALS.fat,
     };
     saveGoals(g);
+    // Save creatine toggle
+    const creatineToggle = document.getElementById('creatine-toggle');
+    if (creatineToggle) setCreatineEnabled(creatineToggle.checked);
     closeModal(dom.settingsModal);
     updateGoalLabels();
     refreshUI();
@@ -1223,14 +1226,10 @@
         });
       });
 
-      // Creatine toggle in settings
+      // Creatine toggle in settings — only previews, saved on Save Changes
       const creatineToggle = document.getElementById('creatine-toggle');
       if (creatineToggle) {
         creatineToggle.checked = isCreatineEnabled();
-        creatineToggle.addEventListener('change', () => {
-          setCreatineEnabled(creatineToggle.checked);
-          refreshUI();
-        });
       }
 
       // Creatine daily checkbox - click toggles taken state
