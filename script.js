@@ -220,16 +220,48 @@
   });
 
   // ==========================================
+  // Auto-Tag Diet Compatibility
+  // ==========================================
+
+  const MEAT_KEYWORDS = /chicken|turkey|beef|steak|pork|lamb|duck|cornish hen|bacon|sausage|jerky|meatball|pepperoni|hot dog/i;
+  const FISH_KEYWORDS = /salmon|tilapia|tuna|cod|trout|shrimp|oyster|scallop|lox|fish|crab|lobster|sushi|poke/i;
+  const DAIRY_KEYWORDS = /milk|cheese|yogurt|cream|butter|whey|cottage|latte|feta|parmesan|mozzarella|cheddar|string cheese/i;
+  const EGG_KEYWORDS = /\beggs?\b|egg white|egg scramble|parfait/i;
+
+  // Dishes that contain meat or fish even if not obvious from primary keyword
+  const MEAT_DISHES = /chicken.*rice|chicken.*sandwich|chicken.*tender|chicken.*nugget|chicken.*quesadilla|stir fry.*chicken|burrito.*chicken|taco.*beef|chili.*beef|meat sauce|meatball|ramen bowl|pad thai|fried rice|burrito bowl|sub.*meatball|sub.*turkey/i;
+  const FISH_DISHES = /sushi|calif.*roll|salmon.*roll/i;
+
+  FOOD_DB.forEach(f => {
+    const n = f.name;
+    const isMeat = MEAT_KEYWORDS.test(n) || MEAT_DISHES.test(n);
+    const isFish = FISH_KEYWORDS.test(n) || FISH_DISHES.test(n);
+    const isDairy = DAIRY_KEYWORDS.test(n) || EGG_KEYWORDS.test(n);
+
+    if (isMeat) {
+      f.diet = ['everything'];
+    } else if (isFish) {
+      f.diet = ['everything', 'pescatarian'];
+    } else if (isDairy) {
+      f.diet = ['everything', 'pescatarian', 'vegetarian'];
+    } else {
+      f.diet = ['everything', 'pescatarian', 'vegetarian', 'vegan'];
+    }
+  });
+
+  // ==========================================
   // State
   // ==========================================
 
   const STORAGE_KEY_LOGS = 'fuelup_logs';
   const STORAGE_KEY_GOALS = 'fuelup_goals';
+  const STORAGE_KEY_DIET = 'fuelup_diet';
 
   const DEFAULT_GOALS = { calories: 3000, protein: 180, carbs: 350, fat: 90 };
 
   let currentDate = getTodayString();
   let goals = loadGoals();
+  let currentDiet = localStorage.getItem(STORAGE_KEY_DIET) || 'everything';
   let selectedFood = null;
   let activeResultIndex = -1;
   let currentUnit = 'g';
@@ -384,7 +416,9 @@
     const q = query.toLowerCase().trim();
     const words = q.split(/\s+/);
 
-    const scored = FOOD_DB.map(food => {
+    const scored = FOOD_DB
+    .filter(food => food.diet.includes(currentDiet))
+    .map(food => {
       const name = food.name.toLowerCase();
       let score = 0;
 
@@ -794,7 +828,9 @@
     }
 
     // Score foods by how well they fill remaining gaps, prioritizing protein
-    const scored = FOOD_DB.map(food => {
+    const scored = FOOD_DB
+    .filter(food => food.diet.includes(currentDiet))
+    .map(food => {
       if (food.cal > remaining.calories + 100) return null; // Too many cals
 
       let score = 0;
@@ -862,6 +898,7 @@
     dom.goalCarbs.value = goals.carbs;
     dom.goalFat.value = goals.fat;
     updatePresetActive();
+    document.querySelectorAll('.diet-btn').forEach(b => b.classList.toggle('active', b.dataset.diet === currentDiet));
     openModal(dom.settingsModal);
   }
 
@@ -1066,6 +1103,16 @@
         });
       });
 
+      // Diet filter buttons
+      Array.from(document.querySelectorAll('.diet-btn') || []).forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentDiet = btn.dataset.diet;
+          localStorage.setItem(STORAGE_KEY_DIET, currentDiet);
+          document.querySelectorAll('.diet-btn').forEach(b => b.classList.toggle('active', b.dataset.diet === currentDiet));
+          refreshUI();
+        });
+      });
+
       // Smart Macro Quiz Modal Flow
       document.addEventListener('click', (e) => {
         const openBtn = e.target.closest('#open-quiz-btn');
@@ -1157,13 +1204,24 @@
 
       dom.servingMinus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        dom.servingInput.value = Math.max(0, v - 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+        let step = 0.25;
+        if (currentUnit === 'pcs' && selectedFood?.perPiece) {
+          // Step by 1 piece worth of servings
+          step = selectedFood.perPiece / selectedFood.grams;
+        }
+        dom.servingInput.value = Math.max(0, v - step).toFixed(4).replace(/\.?0+$/, '');
+        if (dom.servingInput.value === '' || dom.servingInput.value === '-') dom.servingInput.value = '0';
         updateAddFoodMacros();
       });
 
       dom.servingPlus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        dom.servingInput.value = Math.min(200, v + 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
+        let step = 0.25;
+        if (currentUnit === 'pcs' && selectedFood?.perPiece) {
+          // Step by 1 piece worth of servings
+          step = selectedFood.perPiece / selectedFood.grams;
+        }
+        dom.servingInput.value = Math.min(200, v + step).toFixed(4).replace(/\.?0+$/, '');
         updateAddFoodMacros();
       });
 
