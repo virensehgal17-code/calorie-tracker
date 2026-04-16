@@ -617,11 +617,7 @@
       btn.classList.toggle('active', u === currentUnit);
       
       if (selectedFood) {
-        if (u === 'pcs') {
-          // Only show pcs tab when there are multiple pieces per serving
-          const piecesPerServing = selectedFood.perPiece ? selectedFood.grams / selectedFood.perPiece : 0;
-          btn.style.display = (selectedFood.perPiece && piecesPerServing > 1) ? 'block' : 'none';
-        } else if (selectedFood.isLiquid && (u === 'lb' || u === 'g')) {
+        if (selectedFood.isLiquid && (u === 'lb' || u === 'g')) {
           btn.style.display = 'none';
         } else if (!selectedFood.isLiquid && (u === 'ml' || u === 'cup')) {
           btn.style.display = 'none';
@@ -645,11 +641,7 @@
     let dispVal = 0;
     let dispLabel = currentUnit;
 
-    if (currentUnit === 'pcs' && f.perPiece) {
-      const pCount = totalGrams / f.perPiece;
-      dispVal = Number.isInteger(pCount) ? pCount : pCount.toFixed(1).replace(/\.0$/, '');
-      dispLabel = pCount === 1 ? (f.pieceName || 'piece') : getPluralPieceName(f, pCount);
-    } else if (currentUnit === 'g' || currentUnit === 'ml') {
+    if (currentUnit === 'g' || currentUnit === 'ml') {
       dispVal = Math.round(totalGrams);
       dispLabel = currentUnit === 'g' ? 'grams' : 'ml';
     } else if (currentUnit === 'oz') {
@@ -674,15 +666,10 @@
       eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
     }
 
-    if (f.perPiece && currentUnit !== 'pcs') {
+    if (f.perPiece) {
       const pCount = totalGrams / f.perPiece;
       const pRounded = Number.isInteger(pCount) ? pCount : Math.round(pCount);
       eqParts.push(`${pRounded} ${getPluralPieceName(f, pRounded)}`);
-    }
-
-    if (currentUnit === 'pcs' && f.perPiece) {
-      // When showing pieces, also show grams equivalent
-      eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
     }
 
     dom.amountEquivalents.textContent = eqParts.join(' · ');
@@ -720,11 +707,7 @@
     // Build display label based on current unit view
     let label = `${servings.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '')}× ${f.serving}`;
 
-    if (currentUnit === 'pcs' && f.perPiece) {
-      const pCount = totalGrams / f.perPiece;
-      const pRounded = Number.isInteger(pCount) ? pCount : +pCount.toFixed(1);
-      label = `${pRounded} ${getPluralPieceName(f, pRounded)}`;
-    } else if (currentUnit === 'g') {
+    if (currentUnit === 'g') {
       label = `${Math.round(totalGrams)}g ${f.name}`;
     } else if (currentUnit === 'ml') {
       label = `${Math.round(totalGrams)}ml ${f.name}`;
@@ -1090,16 +1073,16 @@
 
     // Creatine reminder
     const creatineSection = document.getElementById('creatine-reminder');
-    const creatineCheck = document.getElementById('creatine-check');
-    const creatineStatus = document.getElementById('creatine-status');
-    if (creatineSection && isCreatineEnabled()) {
-      creatineSection.classList.remove('hidden');
-      const taken = isCreatineTaken(currentDate);
-      creatineCheck.checked = taken;
-      creatineSection.classList.toggle('taken', taken);
-      creatineStatus.textContent = taken ? 'Done ✓' : 'Not yet';
-    } else if (creatineSection) {
-      creatineSection.classList.add('hidden');
+    if (creatineSection) {
+      if (isCreatineEnabled()) {
+        creatineSection.classList.remove('hidden');
+        const taken = isCreatineTaken(currentDate);
+        const box = document.getElementById('creatine-box');
+        if (box) box.classList.toggle('checked', taken);
+        creatineSection.classList.toggle('taken', taken);
+      } else {
+        creatineSection.classList.add('hidden');
+      }
     }
   }
 
@@ -1250,11 +1233,12 @@
         });
       }
 
-      // Creatine daily checkbox
-      const creatineCheck = document.getElementById('creatine-check');
-      if (creatineCheck) {
-        creatineCheck.addEventListener('change', () => {
-          setCreatineTaken(currentDate, creatineCheck.checked);
+      // Creatine daily checkbox - click toggles taken state
+      const creatineLabel = document.getElementById('creatine-check-label');
+      if (creatineLabel) {
+        creatineLabel.addEventListener('click', () => {
+          const taken = isCreatineTaken(currentDate);
+          setCreatineTaken(currentDate, !taken);
           refreshUI();
         });
       }
@@ -1350,24 +1334,13 @@
 
       dom.servingMinus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        let step = 0.25;
-        if (currentUnit === 'pcs' && selectedFood?.perPiece) {
-          // Step by 1 piece worth of servings
-          step = selectedFood.perPiece / selectedFood.grams;
-        }
-        dom.servingInput.value = Math.max(0, v - step).toFixed(4).replace(/\.?0+$/, '');
-        if (dom.servingInput.value === '' || dom.servingInput.value === '-') dom.servingInput.value = '0';
+        dom.servingInput.value = Math.max(0, v - 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         updateAddFoodMacros();
       });
 
       dom.servingPlus?.addEventListener('click', () => {
         const v = parseFloat(dom.servingInput.value) || 0;
-        let step = 0.25;
-        if (currentUnit === 'pcs' && selectedFood?.perPiece) {
-          // Step by 1 piece worth of servings
-          step = selectedFood.perPiece / selectedFood.grams;
-        }
-        dom.servingInput.value = Math.min(200, v + step).toFixed(4).replace(/\.?0+$/, '');
+        dom.servingInput.value = Math.min(200, v + 0.25).toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '');
         updateAddFoodMacros();
       });
 
