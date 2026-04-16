@@ -83,6 +83,16 @@
       </div>
     </section>
 
+    <!-- Creatine Reminder -->
+    <section id="creatine-reminder" class="hidden">
+      <label id="creatine-check-label">
+        <input type="checkbox" id="creatine-check" />
+        <span class="creatine-checkbox-custom"></span>
+        <span class="creatine-text">Creatine (5g)</span>
+        <span class="creatine-status" id="creatine-status">Not yet</span>
+      </label>
+    </section>
+
     <!-- Quick Add Bar -->
     <section id="quick-add">
       <div id="search-container">
@@ -180,6 +190,15 @@
               <button class="preset-btn" data-cal="3500" data-p="220" data-c="500" data-f="100">Mass Gainer (3500)</button>
               <button class="preset-btn" data-cal="2000" data-p="160" data-c="200" data-f="70">Cut (2000)</button>
             </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Supplements</h3>
+            <label id="creatine-toggle-label" class="toggle-row">
+              <span class="toggle-text">Daily creatine reminder</span>
+              <input type="checkbox" id="creatine-toggle" />
+              <span class="toggle-switch"></span>
+            </label>
           </div>
 
           <button id="save-settings-btn" class="primary-btn">Save Changes</button>
