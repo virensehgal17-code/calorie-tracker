@@ -807,6 +807,10 @@ button {
 }
 
 /* Creatine Reminder */
+.hidden {
+  display: none !important;
+}
+
 #creatine-reminder {
   margin: 0 16px 12px;
   background: var(--bg-card);
