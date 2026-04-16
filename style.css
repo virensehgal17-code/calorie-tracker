@@ -747,6 +747,36 @@ button {
 }
 
 /* Preset Buttons */
+.diet-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.diet-btn {
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.diet-btn:hover {
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.diet-btn.active {
+  border-color: var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(34,197,94,0.08);
+}
+
 .preset-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
