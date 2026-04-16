@@ -185,6 +185,83 @@
     { name: 'Greek Yogurt & Berries', serving: '1 cup + ½ cup', cal: 172, protein: 22, carbs: 18, fat: 0 },
     { name: 'Beef Jerky & Pretzels', serving: '1 oz + 1 oz', cal: 190, protein: 16, carbs: 26, fat: 2 },
 
+    // ---- Indian Dishes ----
+    { name: 'Dal Tadka', serving: '1 bowl (250g)', cal: 220, protein: 12, carbs: 30, fat: 6, grams: 250 },
+    { name: 'Dal Makhani', serving: '1 bowl (250g)', cal: 340, protein: 14, carbs: 32, fat: 18, grams: 250 },
+    { name: 'Chana Masala', serving: '1 bowl (250g)', cal: 280, protein: 12, carbs: 38, fat: 8, grams: 250 },
+    { name: 'Rajma (Kidney Bean Curry)', serving: '1 bowl (250g)', cal: 270, protein: 14, carbs: 36, fat: 6, grams: 250 },
+    { name: 'Palak Paneer', serving: '1 bowl (250g)', cal: 320, protein: 16, carbs: 12, fat: 24, grams: 250 },
+    { name: 'Paneer Butter Masala', serving: '1 bowl (250g)', cal: 400, protein: 18, carbs: 16, fat: 30, grams: 250 },
+    { name: 'Paneer Tikka', serving: '6 pieces (180g)', cal: 340, protein: 22, carbs: 10, fat: 24, grams: 180, perPiece: 30, pieceName: 'piece' },
+    { name: 'Shahi Paneer', serving: '1 bowl (250g)', cal: 380, protein: 16, carbs: 14, fat: 28, grams: 250 },
+    { name: 'Mattar Paneer', serving: '1 bowl (250g)', cal: 300, protein: 14, carbs: 20, fat: 18, grams: 250 },
+    { name: 'Saag (Spinach Curry)', serving: '1 bowl (200g)', cal: 180, protein: 8, carbs: 12, fat: 12, grams: 200 },
+    { name: 'Aloo Gobi', serving: '1 bowl (250g)', cal: 200, protein: 5, carbs: 28, fat: 8, grams: 250 },
+    { name: 'Aloo Paratha', serving: '1 paratha (120g)', cal: 300, protein: 7, carbs: 42, fat: 12, grams: 120, perPiece: 120, pieceName: 'paratha' },
+    { name: 'Baingan Bharta', serving: '1 bowl (250g)', cal: 190, protein: 5, carbs: 18, fat: 12, grams: 250 },
+    { name: 'Bhindi Masala (Okra)', serving: '1 bowl (200g)', cal: 160, protein: 4, carbs: 14, fat: 10, grams: 200 },
+    { name: 'Chole Bhature', serving: '1 plate', cal: 550, protein: 14, carbs: 64, fat: 26 },
+    { name: 'Malai Kofta', serving: '1 bowl (250g)', cal: 420, protein: 12, carbs: 24, fat: 30, grams: 250 },
+    { name: 'Chicken Tikka Masala', serving: '1 bowl (250g)', cal: 380, protein: 28, carbs: 14, fat: 24, grams: 250 },
+    { name: 'Butter Chicken', serving: '1 bowl (250g)', cal: 400, protein: 30, carbs: 12, fat: 26, grams: 250 },
+    { name: 'Chicken Biryani', serving: '1 plate (350g)', cal: 500, protein: 25, carbs: 60, fat: 16, grams: 350 },
+    { name: 'Vegetable Biryani', serving: '1 plate (350g)', cal: 400, protein: 10, carbs: 62, fat: 12, grams: 350 },
+    { name: 'Lamb Rogan Josh', serving: '1 bowl (250g)', cal: 360, protein: 28, carbs: 10, fat: 24, grams: 250 },
+    { name: 'Keema (Minced Meat)', serving: '1 bowl (250g)', cal: 340, protein: 26, carbs: 12, fat: 20, grams: 250 },
+    { name: 'Fish Curry', serving: '1 bowl (250g)', cal: 280, protein: 24, carbs: 10, fat: 16, grams: 250 },
+    { name: 'Tandoori Chicken', serving: '2 pieces (200g)', cal: 320, protein: 36, carbs: 6, fat: 16, grams: 200, perPiece: 100, pieceName: 'piece' },
+    { name: 'Naan', serving: '1 piece (90g)', cal: 260, protein: 8, carbs: 42, fat: 6, grams: 90, perPiece: 90, pieceName: 'naan' },
+    { name: 'Garlic Naan', serving: '1 piece (100g)', cal: 300, protein: 8, carbs: 46, fat: 8, grams: 100, perPiece: 100, pieceName: 'naan' },
+    { name: 'Roti / Chapati', serving: '1 piece (40g)', cal: 104, protein: 3, carbs: 18, fat: 2, grams: 40, perPiece: 40, pieceName: 'roti' },
+    { name: 'Puri', serving: '2 pieces (60g)', cal: 230, protein: 4, carbs: 28, fat: 12, grams: 60, perPiece: 30, pieceName: 'puri' },
+    { name: 'Dosa (Plain)', serving: '1 dosa (120g)', cal: 170, protein: 4, carbs: 28, fat: 4, grams: 120, perPiece: 120, pieceName: 'dosa' },
+    { name: 'Masala Dosa', serving: '1 dosa (200g)', cal: 320, protein: 7, carbs: 48, fat: 12, grams: 200, perPiece: 200, pieceName: 'dosa' },
+    { name: 'Idli', serving: '3 pieces (120g)', cal: 180, protein: 5, carbs: 36, fat: 1, grams: 120, perPiece: 40, pieceName: 'idli' },
+    { name: 'Vada (Medu)', serving: '2 pieces (100g)', cal: 280, protein: 8, carbs: 26, fat: 16, grams: 100, perPiece: 50, pieceName: 'vada' },
+    { name: 'Upma', serving: '1 bowl (200g)', cal: 220, protein: 5, carbs: 32, fat: 8, grams: 200 },
+    { name: 'Poha', serving: '1 bowl (200g)', cal: 250, protein: 5, carbs: 38, fat: 8, grams: 200 },
+    { name: 'Samosa (Veggie)', serving: '2 pieces (120g)', cal: 300, protein: 6, carbs: 34, fat: 16, grams: 120, perPiece: 60, pieceName: 'samosa' },
+    { name: 'Pakora / Bhaji', serving: '6 pieces (100g)', cal: 280, protein: 6, carbs: 24, fat: 18, grams: 100, perPiece: 17, pieceName: 'piece' },
+    { name: 'Raita', serving: '½ cup (120g)', cal: 70, protein: 3, carbs: 6, fat: 3, grams: 120 },
+    { name: 'Mango Lassi', serving: '1 glass (250ml)', cal: 220, protein: 6, carbs: 38, fat: 5, grams: 250 },
+    { name: 'Chai (Masala Tea)', serving: '1 cup (200ml)', cal: 80, protein: 2, carbs: 12, fat: 3, grams: 200 },
+    { name: 'Kheer (Rice Pudding)', serving: '1 bowl (150g)', cal: 220, protein: 5, carbs: 32, fat: 8, grams: 150 },
+    { name: 'Gulab Jamun', serving: '2 pieces (80g)', cal: 300, protein: 4, carbs: 42, fat: 14, grams: 80, perPiece: 40, pieceName: 'piece' },
+    { name: 'Jalebi', serving: '3 pieces (75g)', cal: 280, protein: 2, carbs: 50, fat: 8, grams: 75, perPiece: 25, pieceName: 'piece' },
+
+    // ---- Additional Vegetarian / Vegan ----
+    { name: 'Black Beans (Cooked)', serving: '1 cup (172g)', cal: 230, protein: 15, carbs: 40, fat: 1, grams: 172 },
+    { name: 'Lentils (Cooked)', serving: '1 cup (198g)', cal: 230, protein: 18, carbs: 40, fat: 1, grams: 198 },
+    { name: 'Chickpeas (Cooked)', serving: '1 cup (164g)', cal: 270, protein: 15, carbs: 45, fat: 4, grams: 164 },
+    { name: 'Kidney Beans (Cooked)', serving: '1 cup (177g)', cal: 220, protein: 15, carbs: 40, fat: 1, grams: 177 },
+    { name: 'Hummus', serving: '¼ cup (60g)', cal: 140, protein: 5, carbs: 12, fat: 8, grams: 60 },
+    { name: 'Falafel Wrap', serving: '1 wrap', cal: 420, protein: 14, carbs: 48, fat: 18 },
+    { name: 'Veggie Burger Patty', serving: '1 patty (113g)', cal: 230, protein: 18, carbs: 14, fat: 12, grams: 113 },
+    { name: 'Seitan', serving: '3 oz (85g)', cal: 120, protein: 21, carbs: 4, fat: 2, grams: 85 },
+    { name: 'Soy Milk', serving: '1 cup (240ml)', cal: 100, protein: 7, carbs: 8, fat: 4, grams: 240 },
+    { name: 'Almond Milk', serving: '1 cup (240ml)', cal: 40, protein: 1, carbs: 2, fat: 3, grams: 240 },
+    { name: 'Oat Milk', serving: '1 cup (240ml)', cal: 120, protein: 3, carbs: 16, fat: 5, grams: 240 },
+    { name: 'Nutritional Yeast', serving: '2 tbsp (16g)', cal: 60, protein: 8, carbs: 5, fat: 1, grams: 16 },
+    { name: 'Chia Seeds', serving: '2 tbsp (28g)', cal: 140, protein: 5, carbs: 12, fat: 9, grams: 28 },
+    { name: 'Flax Seeds', serving: '2 tbsp (20g)', cal: 110, protein: 4, carbs: 6, fat: 8, grams: 20 },
+    { name: 'Hemp Seeds', serving: '3 tbsp (30g)', cal: 170, protein: 10, carbs: 3, fat: 13, grams: 30 },
+    { name: 'Peanuts', serving: '¼ cup (36g)', cal: 210, protein: 9, carbs: 6, fat: 18, grams: 36 },
+    { name: 'Cashews', serving: '¼ cup (32g)', cal: 190, protein: 5, carbs: 10, fat: 15, grams: 32 },
+    { name: 'Sunflower Seeds', serving: '¼ cup (35g)', cal: 200, protein: 7, carbs: 7, fat: 17, grams: 35 },
+    { name: 'Trail Mix', serving: '¼ cup (40g)', cal: 200, protein: 5, carbs: 18, fat: 13, grams: 40 },
+    { name: 'Almond Butter', serving: '2 tbsp (32g)', cal: 200, protein: 7, carbs: 6, fat: 18, grams: 32 },
+    { name: 'Tahini', serving: '2 tbsp (30g)', cal: 180, protein: 5, carbs: 6, fat: 16, grams: 30 },
+    { name: 'Protein Powder (Whey)', serving: '1 scoop (30g)', cal: 120, protein: 24, carbs: 3, fat: 1, grams: 30 },
+    { name: 'Protein Powder (Plant)', serving: '1 scoop (35g)', cal: 130, protein: 22, carbs: 6, fat: 2, grams: 35 },
+    { name: 'Protein Bar', serving: '1 bar (60g)', cal: 220, protein: 20, carbs: 24, fat: 8, grams: 60 },
+    { name: 'Veggie Stir Fry', serving: '1 plate', cal: 250, protein: 8, carbs: 30, fat: 12 },
+    { name: 'Mushrooms (Cooked)', serving: '1 cup (156g)', cal: 44, protein: 3, carbs: 8, fat: 1, grams: 156 },
+    { name: 'Corn on the Cob', serving: '1 ear (150g)', cal: 130, protein: 5, carbs: 27, fat: 2, grams: 150, perPiece: 150, pieceName: 'ear' },
+    { name: 'Baked Beans', serving: '1 cup (260g)', cal: 240, protein: 12, carbs: 42, fat: 2, grams: 260 },
+    { name: 'Vegetable Soup', serving: '1 bowl (250g)', cal: 120, protein: 4, carbs: 18, fat: 3, grams: 250 },
+    { name: 'Lentil Soup', serving: '1 bowl (250g)', cal: 200, protein: 12, carbs: 28, fat: 4, grams: 250 },
+    { name: 'Minestrone Soup', serving: '1 bowl (250g)', cal: 150, protein: 6, carbs: 22, fat: 3, grams: 250 },
+
     // ---- Desserts ----
     { name: 'Ice Cream (Vanilla)', serving: '½ cup (66g)', cal: 140, protein: 2, carbs: 16, fat: 7 },
     { name: 'Cookie (Chocolate Chip)', serving: '1 large', cal: 220, protein: 2, carbs: 30, fat: 10 },
@@ -223,20 +300,25 @@
   // Auto-Tag Diet Compatibility
   // ==========================================
 
-  const MEAT_KEYWORDS = /chicken|turkey|beef|steak|pork|lamb|duck|cornish hen|bacon|sausage|jerky|meatball|pepperoni|hot dog/i;
+  const MEAT_KEYWORDS = /chicken|turkey|beef|steak|pork|lamb|duck|cornish hen|bacon|sausage|jerky|meatball|pepperoni|hot dog|keema|tandoori chicken|butter chicken|rogan josh/i;
   const FISH_KEYWORDS = /salmon|tilapia|tuna|cod|trout|shrimp|oyster|scallop|lox|fish|crab|lobster|sushi|poke/i;
-  const DAIRY_KEYWORDS = /milk|cheese|yogurt|cream|butter|whey|cottage|latte|feta|parmesan|mozzarella|cheddar|string cheese/i;
+  const DAIRY_KEYWORDS = /cheese|yogurt|cream|whey|cottage|feta|parmesan|mozzarella|cheddar|paneer|raita|lassi|kheer|gulab jamun/i;
   const EGG_KEYWORDS = /\beggs?\b|egg white|egg scramble|parfait/i;
+  // Items with "milk", "butter", "latte" in name that are actually vegan
+  const VEGAN_OVERRIDES = /almond butter|peanut butter|almond milk|soy milk|oat milk|cashew milk|coconut milk/i;
+  // Dairy items that use "milk", "butter", "latte" but aren't caught above
+  const DAIRY_EXTRAS = /\bmilk\b|latte|\bbutter\b/i;
 
   // Dishes that contain meat or fish even if not obvious from primary keyword
-  const MEAT_DISHES = /chicken.*rice|chicken.*sandwich|chicken.*tender|chicken.*nugget|chicken.*quesadilla|stir fry.*chicken|burrito.*chicken|taco.*beef|chili.*beef|meat sauce|meatball|ramen bowl|pad thai|fried rice|burrito bowl|sub.*meatball|sub.*turkey/i;
+  const MEAT_DISHES = /chicken.*rice|chicken.*sandwich|chicken.*tender|chicken.*nugget|chicken.*quesadilla|stir fry.*chicken|burrito.*chicken|taco.*beef|chili.*beef|meat sauce|meatball|ramen bowl|pad thai|fried rice|burrito bowl|sub.*meatball|sub.*turkey|chicken biryani|chicken tikka/i;
   const FISH_DISHES = /sushi|calif.*roll|salmon.*roll/i;
 
   FOOD_DB.forEach(f => {
     const n = f.name;
     const isMeat = MEAT_KEYWORDS.test(n) || MEAT_DISHES.test(n);
     const isFish = FISH_KEYWORDS.test(n) || FISH_DISHES.test(n);
-    const isDairy = DAIRY_KEYWORDS.test(n) || EGG_KEYWORDS.test(n);
+    const isVeganOverride = VEGAN_OVERRIDES.test(n);
+    const isDairy = !isVeganOverride && (DAIRY_KEYWORDS.test(n) || EGG_KEYWORDS.test(n) || DAIRY_EXTRAS.test(n));
 
     if (isMeat) {
       f.diet = ['everything'];
