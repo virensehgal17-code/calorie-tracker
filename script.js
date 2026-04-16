@@ -338,6 +338,8 @@
   const STORAGE_KEY_LOGS = 'fuelup_logs';
   const STORAGE_KEY_GOALS = 'fuelup_goals';
   const STORAGE_KEY_DIET = 'fuelup_diet';
+  const STORAGE_KEY_CREATINE_ON = 'fuelup_creatine_on';
+  const STORAGE_KEY_CREATINE_LOG = 'fuelup_creatine_log';
 
   const DEFAULT_GOALS = { calories: 3000, protein: 180, carbs: 350, fat: 90 };
 
@@ -437,6 +439,33 @@
   function saveGoals(g) {
     goals = g;
     localStorage.setItem(STORAGE_KEY_GOALS, JSON.stringify(g));
+  }
+
+  // ==========================================
+  // Creatine Tracking
+  // ==========================================
+
+  function isCreatineEnabled() {
+    return localStorage.getItem(STORAGE_KEY_CREATINE_ON) === 'true';
+  }
+
+  function setCreatineEnabled(val) {
+    localStorage.setItem(STORAGE_KEY_CREATINE_ON, val ? 'true' : 'false');
+  }
+
+  function getCreatineLog() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY_CREATINE_LOG)) || {}; }
+    catch { return {}; }
+  }
+
+  function setCreatineTaken(dateStr, taken) {
+    const log = getCreatineLog();
+    if (taken) { log[dateStr] = true; } else { delete log[dateStr]; }
+    localStorage.setItem(STORAGE_KEY_CREATINE_LOG, JSON.stringify(log));
+  }
+
+  function isCreatineTaken(dateStr) {
+    return !!getCreatineLog()[dateStr];
   }
 
   // ==========================================
@@ -981,6 +1010,8 @@
     dom.goalFat.value = goals.fat;
     updatePresetActive();
     document.querySelectorAll('.diet-btn').forEach(b => b.classList.toggle('active', b.dataset.diet === currentDiet));
+    const creatineToggle = document.getElementById('creatine-toggle');
+    if (creatineToggle) creatineToggle.checked = isCreatineEnabled();
     openModal(dom.settingsModal);
   }
 
@@ -1055,6 +1086,20 @@
       generateSuggestions(totals);
     } else {
       dom.suggestions.classList.add('hidden');
+    }
+
+    // Creatine reminder
+    const creatineSection = document.getElementById('creatine-reminder');
+    const creatineCheck = document.getElementById('creatine-check');
+    const creatineStatus = document.getElementById('creatine-status');
+    if (creatineSection && isCreatineEnabled()) {
+      creatineSection.classList.remove('hidden');
+      const taken = isCreatineTaken(currentDate);
+      creatineCheck.checked = taken;
+      creatineSection.classList.toggle('taken', taken);
+      creatineStatus.textContent = taken ? 'Done ✓' : 'Not yet';
+    } else if (creatineSection) {
+      creatineSection.classList.add('hidden');
     }
   }
 
@@ -1194,6 +1239,25 @@
           refreshUI();
         });
       });
+
+      // Creatine toggle in settings
+      const creatineToggle = document.getElementById('creatine-toggle');
+      if (creatineToggle) {
+        creatineToggle.checked = isCreatineEnabled();
+        creatineToggle.addEventListener('change', () => {
+          setCreatineEnabled(creatineToggle.checked);
+          refreshUI();
+        });
+      }
+
+      // Creatine daily checkbox
+      const creatineCheck = document.getElementById('creatine-check');
+      if (creatineCheck) {
+        creatineCheck.addEventListener('change', () => {
+          setCreatineTaken(currentDate, creatineCheck.checked);
+          refreshUI();
+        });
+      }
 
       // Smart Macro Quiz Modal Flow
       document.addEventListener('click', (e) => {
