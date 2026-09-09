@@ -899,18 +899,28 @@
   // Custom Food Modal
   // ==========================================
 
-  function openCustomFoodModal() {
+  // `prefillName` carries over whatever was typed in the search box, so
+  // searching for a food you don't have yet and hitting + starts you
+  // halfway through creating it.
+  function openCustomFoodModal(prefillName) {
+    const name = (prefillName || '').trim();
     editingEntryId = null;
     dom.confirmCustomBtn.textContent = 'Add to Log';
-    dom.customName.value = '';
+    dom.customName.value = name;
     dom.customCalories.value = '';
     dom.customProtein.value = '';
     dom.customCarbs.value = '';
     dom.customFat.value = '';
     dom.foodSearch.value = '';
+    dom.searchResults.innerHTML = '';
     dom.searchResults.classList.add('hidden');
     openModal(dom.customFoodModal);
-    dom.customName.focus();
+    // Name is already filled in — go straight to the first thing left to enter
+    if (name) {
+      dom.customCalories.focus();
+    } else {
+      dom.customName.focus();
+    }
   }
 
   function confirmCustomFood() {
@@ -1474,7 +1484,7 @@
       });
 
       // Modals
-      dom.customAddBtn?.addEventListener('click', openCustomFoodModal);
+      dom.customAddBtn?.addEventListener('click', () => openCustomFoodModal(dom.foodSearch.value));
       dom.closeCustomBtn?.addEventListener('click', () => closeModal(dom.customFoodModal));
       dom.customFoodModal?.querySelector('.modal-backdrop')?.addEventListener('click', () => closeModal(dom.customFoodModal));
       dom.confirmCustomBtn?.addEventListener('click', confirmCustomFood);
