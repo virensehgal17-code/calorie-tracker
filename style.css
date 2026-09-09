@@ -381,12 +381,60 @@ button {
   margin-top: 2px;
 }
 
+.result-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .result-macros {
   display: flex;
   gap: 8px;
   font-size: 0.75rem;
   color: var(--text-secondary);
   flex-shrink: 0;
+}
+
+/* Saved custom foods */
+.search-result-item.is-custom {
+  border-left: 2px solid var(--accent-purple);
+}
+
+.custom-badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--accent-purple);
+  background: rgba(192, 132, 252, 0.14);
+  vertical-align: middle;
+}
+
+.result-delete {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.result-delete:hover {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--accent-red);
 }
 
 .result-macros span {

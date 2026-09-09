@@ -340,6 +340,7 @@
   const STORAGE_KEY_DIET = 'fuelup_diet';
   const STORAGE_KEY_CREATINE_ON = 'fuelup_creatine_on';
   const STORAGE_KEY_CREATINE_LOG = 'fuelup_creatine_log';
+  const STORAGE_KEY_CUSTOM_FOODS = 'fuelup_custom_foods';
 
   const DEFAULT_GOALS = { calories: 3000, protein: 180, carbs: 350, fat: 90 };
 
@@ -439,6 +440,108 @@
   function saveGoals(g) {
     goals = g;
     localStorage.setItem(STORAGE_KEY_GOALS, JSON.stringify(g));
+  }
+
+  // ==========================================
+  // Custom Food Catalog
+  // Custom foods are saved to localStorage and merged into FOOD_DB on boot,
+  // so anything you quick-add once stays searchable forever.
+  // ==========================================
+
+  const ALL_DIETS = ['everything', 'pescatarian', 'vegetarian', 'vegan'];
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function loadCustomFoods() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY_CUSTOM_FOODS));
+      if (!Array.isArray(raw)) return [];
+      return raw
+        .filter(f => f && typeof f.name === 'string' && f.name.trim())
+        .map(f => makeCustomFood(f));
+    } catch { return []; }
+  }
+
+  function saveCustomFoods(list) {
+    // Persist only the raw facts — diet tags etc. are rebuilt on load
+    const slim = list.map(f => ({
+      name: f.name,
+      cal: f.cal,
+      protein: f.protein,
+      carbs: f.carbs,
+      fat: f.fat,
+      createdAt: f.createdAt || Date.now(),
+    }));
+    localStorage.setItem(STORAGE_KEY_CUSTOM_FOODS, JSON.stringify(slim));
+  }
+
+  function makeCustomFood(f) {
+    return {
+      name: String(f.name).trim(),
+      serving: '1 serving',
+      cal: Math.max(0, parseInt(f.cal, 10) || 0),
+      protein: Math.max(0, parseInt(f.protein, 10) || 0),
+      carbs: Math.max(0, parseInt(f.carbs, 10) || 0),
+      fat: Math.max(0, parseInt(f.fat, 10) || 0),
+      grams: 0,
+      isCustom: true,
+      createdAt: f.createdAt || Date.now(),
+      // Custom foods are yours — never hidden by the diet filter
+      diet: ALL_DIETS.slice(),
+    };
+  }
+
+  function getCustomFoods() {
+    return FOOD_DB.filter(f => f.isCustom);
+  }
+
+  // A custom food must not shadow a built-in of the same name, or
+  // FOOD_DB.find(by name) becomes ambiguous when editing a log entry.
+  function uniqueCustomName(name) {
+    const clash = FOOD_DB.some(f => !f.isCustom && f.name.toLowerCase() === name.toLowerCase());
+    return clash ? name + ' (Custom)' : name;
+  }
+
+  // Add the food to the catalog, or update it if that name is already saved.
+  // Returns the stored food (its .name may have been de-duplicated).
+  function upsertCustomFood(input) {
+    const food = makeCustomFood(input);
+    const existing = FOOD_DB.find(f => f.isCustom && f.name.toLowerCase() === food.name.toLowerCase());
+
+    if (existing) {
+      food.name = existing.name;
+      food.createdAt = existing.createdAt;
+      Object.assign(existing, food);
+    } else {
+      food.name = uniqueCustomName(food.name);
+      FOOD_DB.push(food);
+    }
+
+    saveCustomFoods(getCustomFoods());
+    return existing || food;
+  }
+
+  function deleteCustomFood(name) {
+    const idx = FOOD_DB.findIndex(f => f.isCustom && f.name === name);
+    if (idx === -1) return false;
+    FOOD_DB.splice(idx, 1);
+    saveCustomFoods(getCustomFoods());
+    return true;
+  }
+
+  // Merge saved custom foods into the in-memory catalog. Runs once, on boot.
+  function hydrateCustomFoods() {
+    loadCustomFoods().forEach(food => {
+      const dup = FOOD_DB.some(f => f.name.toLowerCase() === food.name.toLowerCase());
+      if (!dup) FOOD_DB.push(food);
+    });
   }
 
   // ==========================================
@@ -556,22 +659,26 @@
 
   function renderSearchResults(results) {
     if (results.length === 0) {
+      dom.searchResults.innerHTML = '';
       dom.searchResults.classList.add('hidden');
       activeResultIndex = -1;
       return;
     }
 
     dom.searchResults.innerHTML = results.map((food, i) => `
-      <div class="search-result-item" data-index="${i}">
+      <div class="search-result-item${food.isCustom ? ' is-custom' : ''}" data-index="${i}">
         <div>
-          <div class="result-name">${food.name}</div>
-          <div class="result-serving">${food.serving}</div>
+          <div class="result-name">${escapeHtml(food.name)}${food.isCustom ? '<span class="custom-badge">custom</span>' : ''}</div>
+          <div class="result-serving">${escapeHtml(food.serving)}</div>
         </div>
-        <div class="result-macros">
-          <span class="macro-cal">${food.cal}cal</span>
-          <span class="macro-p">${food.protein}p</span>
-          <span class="macro-c">${food.carbs}c</span>
-          <span class="macro-f">${food.fat}f</span>
+        <div class="result-right">
+          <div class="result-macros">
+            <span class="macro-cal">${food.cal}cal</span>
+            <span class="macro-p">${food.protein}p</span>
+            <span class="macro-c">${food.carbs}c</span>
+            <span class="macro-f">${food.fat}f</span>
+          </div>
+          ${food.isCustom ? `<button class="result-delete" data-index="${i}" aria-label="Remove ${escapeHtml(food.name)} from catalog" title="Remove from catalog">&times;</button>` : ''}
         </div>
       </div>
     `).join('');
@@ -581,10 +688,29 @@
 
     // Click handlers
     dom.searchResults.querySelectorAll('.search-result-item').forEach((el, i) => {
-      el.addEventListener('click', () => {
+      el.addEventListener('click', (e) => {
+        if (e.target.closest('.result-delete')) return;
         openAddFoodModal(results[i]);
       });
     });
+
+    // Custom foods stay in the catalog until you explicitly remove them here
+    dom.searchResults.querySelectorAll('.result-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const food = results[parseInt(btn.dataset.index, 10)];
+        if (!food) return;
+        if (!confirm(`Remove "${food.name}" from your saved foods?\n\nAlready-logged entries are not affected.`)) return;
+        deleteCustomFood(food.name);
+        rerunSearch();
+        refreshUI();
+      });
+    });
+  }
+
+  function rerunSearch() {
+    const q = dom.foodSearch ? dom.foodSearch.value.trim() : '';
+    renderSearchResults(searchFoods(q));
   }
 
   // ==========================================
@@ -599,8 +725,12 @@
     dom.foodSearch.value = '';
     dom.searchResults.classList.add('hidden');
 
-    // Default display unit: grams for solids, ml for liquids
-    currentUnit = food.isLiquid ? 'ml' : 'g';
+    // Custom foods have no gram weight — they are measured in servings,
+    // so the unit switcher is meaningless for them
+    if (dom.unitSwitcher) dom.unitSwitcher.style.display = food.isCustom ? 'none' : '';
+
+    // Default display unit: servings for custom, grams for solids, ml for liquids
+    currentUnit = food.isCustom ? 'serving' : (food.isLiquid ? 'ml' : 'g');
 
     // Servings input always starts at 1
     dom.servingInput.value = '1';
@@ -638,41 +768,49 @@
     const totalGrams = servings * f.grams;
 
     // ----- UI Display: show amount in the selected display unit -----
-    let dispVal = 0;
-    let dispLabel = currentUnit;
+    if (f.isCustom) {
+      // No gram weight to convert — the serving count is the amount
+      dom.amountValue.textContent = formatServings(servings);
+      dom.amountUnitLabel.textContent = servings === 1 ? 'serving' : 'servings';
+      dom.amountEquivalents.textContent = 'Saved custom food';
+      dom.servingDescLabel.textContent = `(1 serving = ${f.cal} cal · ${f.protein}p ${f.carbs}c ${f.fat}f)`;
+    } else {
+      let dispVal = 0;
+      let dispLabel = currentUnit;
 
-    if (currentUnit === 'g' || currentUnit === 'ml') {
-      dispVal = Math.round(totalGrams);
-      dispLabel = currentUnit === 'g' ? 'grams' : 'ml';
-    } else if (currentUnit === 'oz') {
-      dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
-      dispLabel = 'ounces';
-    } else if (currentUnit === 'lb') {
-      dispVal = (totalGrams / 453.592).toFixed(2).replace(/\.00$/, '');
-      dispLabel = 'pounds';
-    } else if (currentUnit === 'cup') {
-      dispVal = (totalGrams / 240).toFixed(2).replace(/\.00$/, '');
-      dispLabel = 'cups';
+      if (currentUnit === 'g' || currentUnit === 'ml') {
+        dispVal = Math.round(totalGrams);
+        dispLabel = currentUnit === 'g' ? 'grams' : 'ml';
+      } else if (currentUnit === 'oz') {
+        dispVal = (totalGrams / 28.3495).toFixed(1).replace(/\.0$/, '');
+        dispLabel = 'ounces';
+      } else if (currentUnit === 'lb') {
+        dispVal = (totalGrams / 453.592).toFixed(2).replace(/\.00$/, '');
+        dispLabel = 'pounds';
+      } else if (currentUnit === 'cup') {
+        dispVal = (totalGrams / 240).toFixed(2).replace(/\.00$/, '');
+        dispLabel = 'cups';
+      }
+
+      dom.amountValue.textContent = dispVal;
+      dom.amountUnitLabel.textContent = dispLabel;
+      dom.servingDescLabel.textContent = `(1 serving = ${f.serving})`;
+
+      // ----- Equivalents: show other useful representations -----
+      let eqParts = [];
+
+      if (currentUnit !== 'g' && currentUnit !== 'ml') {
+        eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
+      }
+
+      if (f.perPiece) {
+        const pCount = totalGrams / f.perPiece;
+        const pRounded = Number.isInteger(pCount) ? pCount : Math.round(pCount);
+        eqParts.push(`${pRounded} ${getPluralPieceName(f, pRounded)}`);
+      }
+
+      dom.amountEquivalents.textContent = eqParts.join(' · ');
     }
-
-    dom.amountValue.textContent = dispVal;
-    dom.amountUnitLabel.textContent = dispLabel;
-    dom.servingDescLabel.textContent = `(1 serving = ${f.serving})`;
-
-    // ----- Equivalents: show other useful representations -----
-    let eqParts = [];
-
-    if (currentUnit !== 'g' && currentUnit !== 'ml') {
-      eqParts.push(`${Math.round(totalGrams)}${f.isLiquid ? 'ml' : 'g'}`);
-    }
-
-    if (f.perPiece) {
-      const pCount = totalGrams / f.perPiece;
-      const pRounded = Number.isInteger(pCount) ? pCount : Math.round(pCount);
-      eqParts.push(`${pRounded} ${getPluralPieceName(f, pRounded)}`);
-    }
-
-    dom.amountEquivalents.textContent = eqParts.join(' · ');
 
     // ----- Macros Preview Display -----
     dom.addFoodMacros.innerHTML = `
@@ -690,6 +828,11 @@
     `;
   }
 
+  function formatServings(v) {
+    // 1 -> "1", 1.5 -> "1.5", 1.25 -> "1.25"
+    return String(parseFloat(v.toFixed(2)));
+  }
+
   function getPluralPieceName(f, count) {
     const name = f.pieceName || 'piece';
     if (name === 'shrimp') return 'shrimp';
@@ -705,9 +848,11 @@
     const totalGrams = servings * f.grams;
 
     // Build display label based on current unit view
-    let label = `${servings.toFixed(2).replace(/\.00$/, '').replace(/\.0$/, '')}× ${f.serving}`;
+    let label = `${formatServings(servings)}× ${f.serving}`;
 
-    if (currentUnit === 'g') {
+    if (f.isCustom) {
+      label = `${formatServings(servings)} ${servings === 1 ? 'serving' : 'servings'} (custom)`;
+    } else if (currentUnit === 'g') {
       label = `${Math.round(totalGrams)}g ${f.name}`;
     } else if (currentUnit === 'ml') {
       label = `${Math.round(totalGrams)}ml ${f.name}`;
@@ -777,8 +922,11 @@
 
     if (cal === 0 && p === 0 && c === 0 && f === 0) return;
 
+    // Save it to the catalog permanently, so it is searchable from now on
+    const savedFood = upsertCustomFood({ name, cal, protein: p, carbs: c, fat: f });
+
     const entry = {
-      name,
+      name: savedFood.name,
       servings: 1,
       servingDesc: 'custom',
       calories: cal,
@@ -841,8 +989,8 @@
     dom.logEntries.innerHTML = entries.map(e => `
       <div class="log-entry" style="cursor: pointer;" data-id="${e.id}">
         <div class="log-entry-info">
-          <div class="log-entry-name">${e.name}</div>
-          <div class="log-entry-serving">${e.displayLabel || (e.servings + '× ' + e.servingDesc)}</div>
+          <div class="log-entry-name">${escapeHtml(e.name)}</div>
+          <div class="log-entry-serving">${escapeHtml(e.displayLabel || (e.servings + '× ' + e.servingDesc))}</div>
         </div>
         <div class="log-entry-macros">
           <span class="macro-cal">${e.calories}</span>
@@ -960,9 +1108,9 @@
 
     dom.suggestions.classList.remove('hidden');
     dom.suggestionCards.innerHTML = scored.map(({ food }) => `
-      <div class="suggestion-card" data-food-name="${food.name}">
-        <div class="suggestion-name">${food.name}</div>
-        <div class="suggestion-detail">${food.serving}</div>
+      <div class="suggestion-card" data-food-name="${escapeHtml(food.name)}">
+        <div class="suggestion-name">${escapeHtml(food.name)}</div>
+        <div class="suggestion-detail">${escapeHtml(food.serving)}</div>
         <div class="suggestion-macros">
           <span class="macro-cal">${food.cal}cal</span>
           <span class="macro-p">${food.protein}p</span>
@@ -1150,6 +1298,7 @@
         amountValue: $('#amount-value'),
         amountUnitLabel: $('#amount-unit-label'),
         amountEquivalents: $('#amount-equivalents'),
+        unitSwitcher: $('#unit-switcher'),
         unitBtns: Array.from($$('.unit-btn')),
         addFoodTotals: $('#add-food-totals'),
         confirmAddBtn: $('#confirm-add-btn'),
@@ -1348,6 +1497,8 @@
       });
 
       // Boot sequence
+      // Pull saved custom foods back into the catalog before anything renders
+      hydrateCustomFoods();
       console.log("Fuel Up: Running first refresh...");
       refreshUI();
       console.log("Fuel Up: Initialization Complete!");
